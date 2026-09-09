@@ -7,6 +7,7 @@ export const handlers = [
 
     const search = url.searchParams.get("search") ?? "";
     const page = Number(url.searchParams.get("page") ?? "");
+    const sortMethod = url.searchParams.get("sort") ?? "";
 
     const filteredNtfs = search
       ? nfts.filter((nft) =>
@@ -18,13 +19,30 @@ export const handlers = [
       return HttpResponse.json({});
     }
 
+    const sortedNtfs = (() => {
+      switch (sortMethod) {
+        case "price-desc":
+          return [...filteredNtfs].sort(
+            (a, b) => Number(b.priceEth) - Number(a.priceEth),
+          );
+
+        case "price-asc":
+          return [...filteredNtfs].sort(
+            (a, b) => Number(a.priceEth) - Number(b.priceEth),
+          );
+
+        default:
+          return filteredNtfs;
+      }
+    })();
+
     const itemsPerPage = 4;
 
     // 0 - 3, 4 - 7...
     const start = itemsPerPage * (page - 1);
     const end = start + itemsPerPage;
 
-    const items = filteredNtfs.slice(start, end);
+    const items = sortedNtfs.slice(start, end);
     const totalItems = items.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 

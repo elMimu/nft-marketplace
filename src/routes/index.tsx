@@ -9,6 +9,7 @@ export const Route = createFileRoute("/")({
   validateSearch: (search) => ({
     search: typeof search.search === "string" ? search.search : "",
     page: Number(search.page) > 0 ? Number(search.page) : 1,
+    sort: typeof search.sort === "string" ? search.sort : "featured",
   }),
   component: RouteComponent,
 });
@@ -44,6 +45,16 @@ function RouteComponent() {
     });
   }
 
+  function handleSort(value: string) {
+    navigate({
+      search: (previous) => ({
+        ...previous,
+        sort: value,
+        page: 1,
+      }),
+    });
+  }
+
   return (
     <div className="">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-8">
@@ -51,20 +62,25 @@ function RouteComponent() {
         <Hero />
       </div>
       <main>
+        {" "}
         <input
           className="border"
           value={searchInput}
           onChange={(event) => setSearchInput(event.target.value)}
           type="text"
         />
-
         <button onClick={handleSearch}>Search</button>
-
+        <select
+          value={searchParams.sort}
+          onChange={(event) => handleSort(event.target.value)}
+        >
+          <option value="featured">Featured</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+        </select>
         {/* {} */}
         {isPending && <p>Loading NFTs...</p>}
-
         {isError && <p>Unable to load NFTs.</p>}
-
         {data && (
           <>
             {data.items.map((nft) => (

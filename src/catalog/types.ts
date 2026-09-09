@@ -8,6 +8,7 @@ export interface NftItem {
 export interface CatalogParams {
   search: string;
   page: number;
+  sort: string;
 }
 
 export interface CatalogResponse {
