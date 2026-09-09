@@ -6,23 +6,31 @@ export function Header() {
     <header>
       <div className="border-b flex p-4 lg:p-0 items-center justify-between">
         {/* TODO - logo change to figma pattern */}
-        <Link className="border lg:w-[160px]" to="/">
+        <Link
+          className="border lg:w-[160px]"
+          to="/"
+          search={{
+            search: "",
+            page: 1,
+          }}
+        >
           KURIO
         </Link>
 
         <nav className="border flex items-center gap-8">
-          <Link className="border" to="/">
+          <Link
+            className="border"
+            to="/"
+            search={{
+              search: "",
+              page: 1,
+            }}
+          >
             Inicio
           </Link>
-          <Link className="border" to="/">
-            Mercado
-          </Link>
-          <Link className="border" to="/">
-            Criadores
-          </Link>
-          <Link className="border" to="/">
-            Aprenda
-          </Link>
+          <span className="border">Mercado</span>
+          <span className="border">Criadores</span>
+          <span className="border">Aprenda</span>
         </nav>
 
         {/*TODO SEARCHBAR*/}

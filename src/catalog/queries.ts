@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getNftsItems } from "./api";
+import { getCatalog } from "./api";
+import type { CatalogParams } from "./types";
 
-export function useNftsItemsQuery() {
+export function useCatalogQuery(params: CatalogParams) {
   return useQuery({
-    queryKey: ["nfts"],
-    queryFn: getNftsItems,
+    queryKey: ["nfts", params],
+    queryFn: () => getCatalog(params),
   });
 }
