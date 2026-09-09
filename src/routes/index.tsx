@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import { Header } from "@/components/layout/Header";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -7,9 +7,11 @@ export const Route = createFileRoute("/")({
 
 function RouteComponent() {
   return (
-    <div>
-      <h1 className="text-3xl">MARKETPLACE de NFT</h1>
-      <Button />
+    <div className="w-full">
+      <Header />
+      <main>
+        {/* {} */}
+      </main>
     </div>
   );
 }
