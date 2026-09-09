@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 export function Header() {
   return (
     <header>
-      <div className="border-b flex  mx-auto w-full max-w-[1200px] p-4 lg:p-0 items-center justify-between">
+      <div className="border-b flex p-4 lg:p-0 items-center justify-between">
         {/* TODO - logo change to figma pattern */}
         <Link className="border lg:w-[160px]" to="/">
           KURIO
