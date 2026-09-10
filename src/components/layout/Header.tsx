@@ -1,7 +1,4 @@
-import {
-  Search,
-  ShoppingCart,
-} from "lucide-react";
+import { Search, ShoppingCart, User } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 import { useAuth } from "@/auth/AuthContext";
@@ -22,33 +19,21 @@ const homeSearch = {
   priceMax: "",
 };
 
-export function Header({
-  onSearchClick,
-}: HeaderProps) {
-  const { user, logout } = useAuth();
+export function Header({ onSearchClick }: HeaderProps) {
+  const { user } = useAuth();
 
   return (
     <header className="hidden h-[72px] items-center justify-between lg:flex">
-      <Link
-        to="/"
-        search={homeSearch}
-        className="font-bold tracking-widest"
-      >
+      <Link to="/" search={homeSearch} className="font-bold tracking-widest">
         KURIO
       </Link>
 
       <nav className="flex items-center gap-8">
-        <Link
-          to="/"
-          search={homeSearch}
-        >
+        <Link to="/" search={homeSearch}>
           Início
         </Link>
 
-        <Link
-          to="/"
-          search={homeSearch}
-        >
+        <Link to="/" search={homeSearch}>
           Mercado
         </Link>
       </nav>
@@ -68,23 +53,19 @@ export function Header({
           nativeButton={false}
           variant="ghost"
           size="icon"
-          render={
-            <Link
-              to="/cart"
-              aria-label="Carrinho"
-            />
-          }
+          render={<Link to="/cart" aria-label="Carrinho" />}
         >
           <ShoppingCart />
         </Button>
 
         {user ? (
           <Button
-            type="button"
-            variant="outline"
-            onClick={logout}
+            nativeButton={false}
+            variant="ghost"
+            size="icon"
+            render={<Link to="/profile" aria-label="Meu perfil" />}
           >
-            Sair
+            <User />
           </Button>
         ) : (
           <LoginDialog />
