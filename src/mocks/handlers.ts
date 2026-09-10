@@ -2,6 +2,16 @@ import { http, HttpResponse } from "msw";
 import { nfts } from "./nfts";
 
 export const handlers = [
+  http.get("/api/nfts/:id", ({ params }) => {
+    const nft = nfts.find((item) => item.id === params.id);
+
+    if (!nft) {
+      return HttpResponse.json({ message: "NFT not found" }, { status: 404 });
+    }
+
+    return HttpResponse.json(nft);
+  }),
+
   http.get("/api/nfts", ({ request }) => {
     const url = new URL(request.url);
 
