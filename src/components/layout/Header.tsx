@@ -65,6 +65,7 @@ export function Header({
         </Button>
 
         <Button
+          nativeButton={false}
           variant="ghost"
           size="icon"
           render={
