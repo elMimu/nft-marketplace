@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Sidebar } from "@/components/catalog/Sidebar";
 import { NftCard } from "@/components/catalog/NftCard";
 import { Search } from "@/components/catalog/Search";
+import { MobileFilters } from "@/components/catalog/MobileFilters";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => ({
@@ -25,7 +26,6 @@ function RouteComponent() {
   const searchParams = Route.useSearch();
   const [searchInput, setSearchInput] = useState(searchParams.search);
   const { data, isPending, isError } = useCatalogQuery(searchParams);
-  console.log(data?.totalPages);
 
   const navigate = Route.useNavigate();
 
@@ -63,6 +63,26 @@ function RouteComponent() {
     });
   }
 
+  function handleCollection(collection: string) {
+    navigate({
+      search: (previous) => ({
+        ...previous,
+        collection,
+        page: 1,
+      }),
+    });
+  }
+
+  function handleNetwork(network: string) {
+    navigate({
+      search: (previous) => ({
+        ...previous,
+        network,
+        page: 1,
+      }),
+    });
+  }
+
   return (
     <div className="">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-8">
@@ -75,12 +95,23 @@ function RouteComponent() {
             className="flex gap-2"
           />
         </div>
+        <MobileFilters
+          collection={searchParams.collection}
+          network={searchParams.network}
+          onCollectionChange={handleCollection}
+          onNetworkChange={handleNetwork}
+        />
         <Hero />
       </div>
 
       <main className="mx-auto mt-12 w-full max-w-[1200px] px-4 lg:px-0">
         <div className="grid gap-10 lg:grid-cols-[260px_minmax(0,1fr)]">
-          <Sidebar />
+          <Sidebar
+            collection={searchParams.collection}
+            network={searchParams.network}
+            onCollectionChange={handleCollection}
+            onNetworkChange={handleNetwork}
+          />
 
           <section>
             <Search

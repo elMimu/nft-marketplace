@@ -2,73 +2,61 @@ import { http, HttpResponse } from "msw";
 import { nfts } from "./nfts";
 
 export const handlers = [
-  http.get("/api/nfts", async ({ request }) => {
+  http.get("/api/nfts", ({ request }) => {
     const url = new URL(request.url);
 
     const search = url.searchParams.get("search") ?? "";
+    const page = Number(url.searchParams.get("page") ?? "1");
+    const sort = url.searchParams.get("sort") ?? "featured";
     const collection = url.searchParams.get("collection") ?? "";
     const network = url.searchParams.get("network") ?? "";
     const priceMin = url.searchParams.get("priceMin") ?? "";
     const priceMax = url.searchParams.get("priceMax") ?? "";
-    const page = Number(url.searchParams.get("page") ?? "");
-    const sortMethod = url.searchParams.get("sort") ?? "";
 
-    let filteredNtfs = [...nfts];
+    let filteredNfts = [...nfts];
 
     if (search) {
-      filteredNtfs.filter((nft) =>
+      filteredNfts = filteredNfts.filter((nft) =>
         nft.name.toLowerCase().includes(search.toLowerCase()),
       );
     }
 
     if (collection) {
-      filteredNtfs.filter((nft) => nft.collection == collection);
+      filteredNfts = filteredNfts.filter(
+        (nft) => nft.collection === collection,
+      );
     }
 
-
     if (network) {
-      filteredNtfs.filter((nft) => nft.network == network);
+      filteredNfts = filteredNfts.filter((nft) => nft.network === network);
     }
 
     if (priceMin) {
-      filteredNtfs.filter((nft) => Number(nft.priceEth) >= Number(priceMin));
+      filteredNfts = filteredNfts.filter(
+        (nft) => Number(nft.priceEth) >= Number(priceMin),
+      );
     }
 
     if (priceMax) {
-      filteredNtfs.filter((nft) => Number(nft.priceEth) <= Number(priceMax));
+      filteredNfts = filteredNfts.filter(
+        (nft) => Number(nft.priceEth) <= Number(priceMax),
+      );
     }
 
-    if (filteredNtfs.length <= 0) {
-      return HttpResponse.json({});
+    if (sort === "price-asc") {
+      filteredNfts.sort((a, b) => Number(a.priceEth) - Number(b.priceEth));
     }
 
+    if (sort === "price-desc") {
+      filteredNfts.sort((a, b) => Number(b.priceEth) - Number(a.priceEth));
+    }
 
-    const sortedNtfs = (() => {
-      switch (sortMethod) {
-        case "price-desc":
-          return [...filteredNtfs].sort(
-            (a, b) => Number(b.priceEth) - Number(a.priceEth),
-          );
+    const pageSize = 9;
+    const totalItems = filteredNfts.length;
+    const totalPages = Math.ceil(totalItems / pageSize);
 
-        case "price-asc":
-          return [...filteredNtfs].sort(
-            (a, b) => Number(a.priceEth) - Number(b.priceEth),
-          );
-
-        default:
-          return filteredNtfs;
-      }
-    })();
-
-    const itemsPerPage = 9;
-
-    // 0 - 3, 4 - 7...
-    const start = itemsPerPage * (page - 1);
-    const end = start + itemsPerPage;
-
-    const items = sortedNtfs.slice(start, end);
-    const totalItems = filteredNtfs.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const start = (page - 1) * pageSize;
+    const items = filteredNfts.slice(start, start + pageSize);
 
     console.log(totalItems);
 
