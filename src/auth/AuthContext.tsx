@@ -2,11 +2,13 @@ import { createContext, type ReactNode, useContext, useState } from "react";
 
 interface User {
   email: string;
+  username?: string;
 }
 
 interface AuthContextValue {
   user: User | null;
   login: (email: string, password: string) => boolean;
+  register: (username: string, email: string, password: string) => void;
   logout: () => void;
 }
 
@@ -31,20 +33,33 @@ function loadUser(): User | null {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(loadUser);
 
+  function saveUser(newUser: User) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
+
+    setUser(newUser);
+  }
+
   function login(email: string, password: string) {
     if (!email.trim() || password.length < 4) {
       return false;
     }
 
-    const newUser = {
+    saveUser({
       email: email.trim(),
-    };
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
-
-    setUser(newUser);
+    });
 
     return true;
+  }
+
+  function register(username: string, email: string, password: string) {
+    if (!password) {
+      return;
+    }
+
+    saveUser({
+      username: username.trim(),
+      email: email.trim(),
+    });
   }
 
   function logout() {
@@ -57,6 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         login,
+        register,
         logout,
       }}
     >

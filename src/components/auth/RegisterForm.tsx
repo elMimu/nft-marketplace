@@ -4,26 +4,37 @@ import { useState } from "react";
 import { useAuth } from "@/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 
-interface LoginFormProps {
+interface RegisterFormProps {
   onSuccess?: () => void;
 }
 
-export function LoginForm({ onSuccess }: LoginFormProps) {
-  const { login } = useAuth();
+export function RegisterForm({ onSuccess }: RegisterFormProps) {
+  const { register } = useAuth();
 
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
-  function handleLogin() {
-    const success = login(email, password);
-
-    if (!success) {
-      setError("Informe um e-mail e uma senha válida.");
+  function handleRegister() {
+    if (!username.trim() || !email.trim()) {
+      setError("Preencha todos os campos.");
       return;
     }
 
+    if (password.length < 4) {
+      setError("A senha deve ter pelo menos 4 caracteres.");
+      return;
+    }
+
+    if (password !== confirmation) {
+      setError("As senhas não coincidem.");
+      return;
+    }
+
+    register(username, email, password);
     setError("");
     onSuccess?.();
   }
@@ -31,10 +42,22 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   return (
     <div className="space-y-4">
       <input
+        type="text"
+        value={username}
+        onChange={(event) => setUsername(event.target.value)}
+        placeholder="Nome de usuário"
+        className="
+          h-12 w-full rounded-xl border
+          bg-background px-4 outline-none
+          focus:ring-2 focus:ring-ring
+        "
+      />
+
+      <input
         type="email"
         value={email}
         onChange={(event) => setEmail(event.target.value)}
-        placeholder="contato@email.com"
+        placeholder="Digite seu e-mail"
         className="
           h-12 w-full rounded-xl border
           bg-background px-4 outline-none
@@ -70,14 +93,26 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         </button>
       </div>
 
+      <input
+        type={showPassword ? "text" : "password"}
+        value={confirmation}
+        onChange={(event) => setConfirmation(event.target.value)}
+        placeholder="Confirmar senha"
+        className="
+          h-12 w-full rounded-xl border
+          bg-background px-4 outline-none
+          focus:ring-2 focus:ring-ring
+        "
+      />
+
       {error && <p className="text-sm text-destructive">{error}</p>}
 
       <Button
         type="button"
         className="h-12 w-full font-semibold"
-        onClick={handleLogin}
+        onClick={handleRegister}
       >
-        Entrar
+        Criar conta
       </Button>
     </div>
   );
