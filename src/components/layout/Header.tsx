@@ -1,60 +1,93 @@
+import {
+  Search,
+  ShoppingCart,
+} from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { Button } from "../ui/button";
+
+import { useAuth } from "@/auth/AuthContext";
+import { LoginDialog } from "@/components/auth/LoginDialog";
+import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
   onSearchClick: () => void;
 }
 
-export function Header({ onSearchClick }: HeaderProps) {
+const homeSearch = {
+  search: "",
+  page: 1,
+  sort: "featured",
+  collection: "",
+  network: "",
+  priceMin: "",
+  priceMax: "",
+};
+
+export function Header({
+  onSearchClick,
+}: HeaderProps) {
+  const { user, logout } = useAuth();
+
   return (
-    <header className="hidden lg:block">
-      <div className="border-b flex p-4 lg:p-0 items-center justify-between">
-        {/* TODO - logo change to figma pattern */}
+    <header className="hidden h-[72px] items-center justify-between lg:flex">
+      <Link
+        to="/"
+        search={homeSearch}
+        className="font-bold tracking-widest"
+      >
+        KURIO
+      </Link>
+
+      <nav className="flex items-center gap-8">
         <Link
-          className="border lg:w-[160px]"
           to="/"
-          search={{
-            search: "",
-            page: 1,
-            sort: "featured",
-            collection: "",
-            network: "",
-            priceMin: "",
-            priceMax: "",
-          }}
+          search={homeSearch}
         >
-          KURIO
+          Início
         </Link>
 
-        <nav className="border flex items-center gap-8">
-          <Link
-            className="border"
-            to="/"
-            search={{
-              search: "",
-              page: 1,
-              sort: "featured",
-              collection: "",
-              network: "",
-              priceMin: "",
-              priceMax: "",
-            }}
-          >
-            Inicio
-          </Link>
-          <span className="border">Mercado</span>
-          <span className="border">Criadores</span>
-          <span className="border">Aprenda</span>
-        </nav>
+        <Link
+          to="/"
+          search={homeSearch}
+        >
+          Mercado
+        </Link>
+      </nav>
 
-        {/*TODO SEARCHBAR*/}
-        <div className="border flex items-center gap-8">
-          <button type="button" className="border" onClick={onSearchClick}>
-            Search
-          </button>
-          <button className="border">Carrinho</button>
-          <Button>Entrar</Button>
-        </div>
+      <div className="flex items-center gap-3">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={onSearchClick}
+          aria-label="Buscar NFTs"
+        >
+          <Search />
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          render={
+            <Link
+              to="/cart"
+              aria-label="Carrinho"
+            />
+          }
+        >
+          <ShoppingCart />
+        </Button>
+
+        {user ? (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={logout}
+          >
+            Sair
+          </Button>
+        ) : (
+          <LoginDialog />
+        )}
       </div>
     </header>
   );
