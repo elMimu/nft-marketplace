@@ -1,7 +1,10 @@
 import { ArrowLeft, Minus, Plus, ShoppingCart } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
+import { useCart } from "@/cart/useCart";
 import { Button } from "@/components/ui/button";
+import { multiplyEth } from "@/lib/eth";
 
 interface NftDetailsProps {
   nft: {
@@ -32,30 +35,10 @@ const networkLabels: Record<string, string> = {
   solana: "Solana",
 };
 
-function multiplyEth(price: string, quantity: number) {
-  const [integerPart, decimalPart = ""] = price.split(".");
-  const scale = 10n ** BigInt(decimalPart.length);
-
-  const integer = BigInt(integerPart || "0") * scale;
-  const decimal = BigInt(decimalPart || "0");
-
-  const total = (integer + decimal) * BigInt(quantity);
-  const whole = total / scale;
-
-  if (decimalPart.length === 0) {
-    return whole.toString();
-  }
-
-  const fraction = (total % scale)
-    .toString()
-    .padStart(decimalPart.length, "0")
-    .replace(/0+$/, "");
-
-  return fraction ? `${whole}.${fraction}` : whole.toString();
-}
-
 export function NftDetails({ nft }: NftDetailsProps) {
   const [quantity, setQuantity] = useState(1);
+  const { addItem } = useCart();
+  const navigate = useNavigate();
 
   const collection = collectionLabels[nft.collection] ?? nft.collection;
 
@@ -69,6 +52,22 @@ export function NftDetails({ nft }: NftDetailsProps) {
 
   function increaseQuantity() {
     setQuantity((current) => current + 1);
+  }
+
+  function handleAddToCart() {
+    addItem(
+      {
+        id: nft.id,
+        name: nft.name,
+        priceEth: nft.priceEth,
+        imageUrl: nft.imageUrl,
+      },
+      quantity,
+    );
+
+    navigate({
+      to: "/cart",
+    });
   }
 
   return (
@@ -182,24 +181,14 @@ export function NftDetails({ nft }: NftDetailsProps) {
               <strong className="text-xl lg:text-2xl">{totalPrice} ETH</strong>
             </div>
 
-            <div className="mt-5 flex gap-3">
-              <Button
-                type="button"
-                className="h-12 flex-1 text-base font-semibold"
-              >
-                Comprar NFT
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="h-12 w-12 shrink-0 rounded-full"
-                aria-label="Adicionar ao carrinho"
-              >
-                <ShoppingCart />
-              </Button>
-            </div>
+            <Button
+              type="button"
+              className="mt-5 h-12 w-full text-base font-semibold"
+              onClick={handleAddToCart}
+            >
+              <ShoppingCart />
+              Adicionar ao carrinho
+            </Button>
           </div>
         </section>
       </div>
