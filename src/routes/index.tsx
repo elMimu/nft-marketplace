@@ -10,6 +10,10 @@ export const Route = createFileRoute("/")({
     search: typeof search.search === "string" ? search.search : "",
     page: Number(search.page) > 0 ? Number(search.page) : 1,
     sort: typeof search.sort === "string" ? search.sort : "featured",
+    collection: typeof search.collection === "string" ? search.collection : "",
+    network: typeof search.network === "string" ? search.network : "",
+    priceMin: typeof search.priceMin === "string" ? search.priceMin : "",
+    priceMax: typeof search.priceMax === "string" ? search.priceMax : "",
   }),
   component: RouteComponent,
 });

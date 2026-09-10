@@ -6,14 +6,36 @@ export const handlers = [
     const url = new URL(request.url);
 
     const search = url.searchParams.get("search") ?? "";
+    const collection = url.searchParams.get("collection") ?? "";
+    const network = url.searchParams.get("network") ?? "";
+    const priceMin = url.searchParams.get("priceMin") ?? "";
+    const priceMax = url.searchParams.get("priceMax") ?? "";
     const page = Number(url.searchParams.get("page") ?? "");
     const sortMethod = url.searchParams.get("sort") ?? "";
 
-    const filteredNtfs = search
-      ? nfts.filter((nft) =>
+    let filteredNtfs = [...nfts];
+
+    if (search) {
+      filteredNtfs.filter((nft) =>
         nft.name.toLowerCase().includes(search.toLowerCase()),
-      )
-      : nfts;
+      );
+    }
+
+    if (collection) {
+      filteredNtfs.filter((nft) => nft.collection == collection);
+    }
+
+    if (network) {
+      filteredNtfs.filter((nft) => nft.network == network);
+    }
+
+    if (priceMin) {
+      filteredNtfs.filter((nft) => Number(nft.priceEth) >= Number(priceMin));
+    }
+
+    if (priceMax) {
+      filteredNtfs.filter((nft) => Number(nft.priceEth) <= Number(priceMax));
+    }
 
     if (filteredNtfs.length <= 0) {
       return HttpResponse.json({});
