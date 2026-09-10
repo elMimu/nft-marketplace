@@ -1,9 +1,17 @@
 import { ArrowLeft, Minus, Plus, Trash2 } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 
+import { useAuth } from "@/auth/AuthContext";
 import { useCart } from "@/cart/useCart";
+import { LoginDialog } from "@/components/auth/LoginDialog";
 import { Button } from "@/components/ui/button";
-import { addEth, multiplyEth } from "@/lib/eth";
+import {
+  addEth,
+  applyDiscountEth,
+  multiplyEth,
+  percentageEth,
+} from "@/lib/eth";
 
 const homeSearch = {
   search: "",
@@ -19,9 +27,50 @@ export function CartPage() {
   const { items, increaseQuantity, decreaseQuantity, removeItem, clearCart } =
     useCart();
 
-  const total = addEth(
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const [coupon, setCoupon] = useState("");
+  const [discountPercent, setDiscountPercent] = useState(0);
+  const [couponMessage, setCouponMessage] = useState("");
+  const [couponError, setCouponError] = useState(false);
+
+  const subtotal = addEth(
     items.map((item) => multiplyEth(item.priceEth, item.quantity)),
   );
+
+  const discount = percentageEth(subtotal, discountPercent);
+
+  const total = applyDiscountEth(subtotal, discountPercent);
+
+  function applyCoupon() {
+    const match = coupon
+      .trim()
+      .toUpperCase()
+      .match(/^(\d{1,3})OFFKURIO$/);
+
+    const percentage = Number(match?.[1]);
+
+    if (!match || percentage < 1 || percentage > 100) {
+      setDiscountPercent(0);
+      setCouponMessage("Cupom inválido.");
+      setCouponError(true);
+      return;
+    }
+
+    setDiscountPercent(percentage);
+    setCouponMessage(`${percentage}% de desconto aplicado.`);
+    setCouponError(false);
+  }
+
+  function goToPayment() {
+    navigate({
+      to: "/payment",
+      search: {
+        discount: discountPercent,
+      },
+    });
+  }
 
   if (items.length === 0) {
     return (
@@ -54,7 +103,6 @@ export function CartPage() {
 
   return (
     <main className="mx-auto w-full max-w-[1200px] px-6 py-8 lg:px-0 lg:py-10">
-      {/* Mobile title */}
       <div className="mb-8 flex items-center lg:hidden">
         <Button
           type="button"
@@ -72,12 +120,10 @@ export function CartPage() {
         </h1>
       </div>
 
-      {/* Desktop title */}
       <h1 className="mb-6 hidden text-2xl font-bold lg:block">Carrinho</h1>
 
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">
         <section>
-          {/* Desktop headings */}
           <div className="mb-2 hidden grid-cols-[minmax(0,1fr)_110px_150px_110px_40px] gap-4 border-b pb-3 text-sm font-semibold lg:grid">
             <span>NFT</span>
             <span>Preço</span>
@@ -101,7 +147,6 @@ export function CartPage() {
                   lg:border-t-0
                 "
               >
-                {/* NFT */}
                 <div className="flex min-w-0 gap-4">
                   <img
                     src={item.imageUrl}
@@ -123,12 +168,10 @@ export function CartPage() {
                   </div>
                 </div>
 
-                {/* Desktop unit price */}
                 <p className="hidden font-semibold lg:block">
                   {item.priceEth} ETH
                 </p>
 
-                {/* Quantity */}
                 <div className="mt-5 flex items-center justify-between lg:mt-0 lg:justify-start">
                   <div className="flex items-center gap-3">
                     <Button
@@ -159,18 +202,15 @@ export function CartPage() {
                     </Button>
                   </div>
 
-                  {/* Mobile total */}
                   <strong className="text-lg lg:hidden">
                     {multiplyEth(item.priceEth, item.quantity)} ETH
                   </strong>
                 </div>
 
-                {/* Desktop total */}
                 <strong className="hidden lg:block">
                   {multiplyEth(item.priceEth, item.quantity)} ETH
                 </strong>
 
-                {/* Remove */}
                 <Button
                   type="button"
                   variant="ghost"
@@ -186,20 +226,55 @@ export function CartPage() {
           </div>
         </section>
 
-        {/* Summary */}
         <aside className="h-fit rounded-[28px] border p-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Resumo</h2>
+          <h2 className="text-xl font-semibold">Resumo</h2>
 
-            <Button type="button" variant="ghost" size="sm" onClick={clearCart}>
-              Limpar
-            </Button>
+          <div className="mt-6">
+            <label htmlFor="coupon" className="text-sm font-medium">
+              Código promocional
+            </label>
+
+            <div className="mt-2 flex gap-2">
+              <input
+                id="coupon"
+                type="text"
+                value={coupon}
+                onChange={(event) => setCoupon(event.target.value)}
+                placeholder="10OFFKURIO"
+                className="h-10 min-w-0 flex-1 rounded-lg border bg-background px-3 text-sm outline-none"
+              />
+
+              <Button type="button" variant="outline" onClick={applyCoupon}>
+                Aplicar
+              </Button>
+            </div>
+
+            {couponMessage && (
+              <p
+                className={`mt-2 text-xs ${couponError ? "text-destructive" : "text-muted-foreground"
+                  }`}
+              >
+                {couponMessage}
+              </p>
+            )}
           </div>
 
-          <div className="mt-8 flex items-center justify-between">
-            <span className="text-muted-foreground">Subtotal</span>
+          <div className="mt-8 space-y-4">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Subtotal</span>
 
-            <span>{total} ETH</span>
+              <span>{subtotal} ETH</span>
+            </div>
+
+            {discountPercent > 0 && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">
+                  Desconto ({discountPercent}%)
+                </span>
+
+                <span>- {discount} ETH</span>
+              </div>
+            )}
           </div>
 
           <div className="mt-5 border-t pt-5">
@@ -210,12 +285,33 @@ export function CartPage() {
             </div>
           </div>
 
+          {user ? (
+            <Button type="button" className="mt-8 w-full" onClick={goToPayment}>
+              Finalizar
+            </Button>
+          ) : (
+            <LoginDialog
+              triggerLabel="Conectar e finalizar"
+              triggerClassName="mt-8 w-full"
+              onSuccess={goToPayment}
+            />
+          )}
+
           <Button
             variant="outline"
-            className="mt-8 w-full"
+            className="mt-3 w-full"
             render={<Link to="/" search={homeSearch} />}
           >
             Continuar explorando
+          </Button>
+
+          <Button
+            type="button"
+            variant="ghost"
+            className="mt-2 w-full"
+            onClick={clearCart}
+          >
+            Limpar carrinho
           </Button>
         </aside>
       </div>

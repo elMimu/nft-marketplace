@@ -41,6 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
+
     setUser(newUser);
 
     return true;

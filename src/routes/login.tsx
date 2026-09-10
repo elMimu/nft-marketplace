@@ -10,6 +10,11 @@ function RouteComponent() {
   const navigate = useNavigate();
 
   function handleSuccess() {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
     navigate({
       to: "/",
       search: {

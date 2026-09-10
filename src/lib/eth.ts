@@ -52,3 +52,18 @@ export function addEth(values: string[]) {
 
   return formatDecimal(total, scale);
 }
+
+export function percentageEth(value: string, percentage: number) {
+  const parsed = parseDecimal(value);
+  const result = parsed.value * BigInt(percentage);
+
+  return formatDecimal(result, parsed.scale + 2);
+}
+
+export function applyDiscountEth(value: string, percentage: number) {
+  const parsed = parseDecimal(value);
+  const multiplier = BigInt(100 - percentage);
+  const result = parsed.value * multiplier;
+
+  return formatDecimal(result, parsed.scale + 2);
+}
