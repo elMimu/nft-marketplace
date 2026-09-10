@@ -161,8 +161,14 @@ function RouteComponent() {
               </label>
             </div>
             {/* grid */}
+
             {isPending && <p>Loading NFTs...</p>}
             {isError && <p>Unable to load NFTs.</p>}
+            {data && (
+              <p className="text-sm text-muted-foreground">
+                Página {data.page} de {data.totalPages} · {data.totalItems} NFTs
+              </p>
+            )}
             {data && data.items.length > 0 && (
               <div className="grid grid-cols-2 gap-x-8 gap-y-14 lg:grid-cols-3">
                 {data.items.map((nft) => (

@@ -11,21 +11,21 @@ interface FiltersProps {
 }
 
 const collections = [
-  { label: "Arte digital", value: "digital-art", count: 33 },
-  { label: "Fotografia", value: "photography", count: 12 },
-  { label: "Música", value: "music", count: 65 },
-  { label: "Arte 3D", value: "3d-art", count: 39 },
-  { label: "Colecionáveis", value: "collectibles", count: 23 },
-  { label: "Generativa", value: "generative", count: 17 },
-  { label: "Jogos", value: "games", count: 19 },
-  { label: "Assinaturas", value: "subscriptions", count: 13 },
-  { label: "Utilidade", value: "utility", count: 18 },
+  { label: "Arte digital", value: "digital-art" },
+  { label: "Fotografia", value: "photography" },
+  { label: "Música", value: "music" },
+  { label: "Arte 3D", value: "3d-art" },
+  { label: "Colecionáveis", value: "collectibles" },
+  { label: "Generativa", value: "generative" },
+  { label: "Jogos", value: "games" },
+  { label: "Assinaturas", value: "subscriptions" },
+  { label: "Utilidade", value: "utility" },
 ];
 
 const networks = [
-  { label: "Ethereum", value: "ethereum", count: 119 },
-  { label: "Polygon", value: "polygon", count: 78 },
-  { label: "Solana", value: "solana", count: 86 },
+  { label: "Ethereum", value: "ethereum" },
+  { label: "Polygon", value: "polygon" },
+  { label: "Solana", value: "solana" },
 ];
 
 export function Filters({
@@ -57,7 +57,6 @@ export function Filters({
                 }`}
             >
               <span>{item.label}</span>
-              <span>({item.count})</span>
             </button>
           ))}
         </div>
@@ -108,7 +107,6 @@ export function Filters({
                 }`}
             >
               <span>{item.label}</span>
-              <span>({item.count})</span>
             </button>
           ))}
         </div>
