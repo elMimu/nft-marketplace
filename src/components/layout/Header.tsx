@@ -1,7 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "../ui/button";
 
-export function Header() {
+interface HeaderProps {
+  onSearchClick: () => void;
+}
+
+export function Header({ onSearchClick }: HeaderProps) {
   return (
     <header>
       <div className="border-b flex p-4 lg:p-0 items-center justify-between">
@@ -12,6 +16,11 @@ export function Header() {
           search={{
             search: "",
             page: 1,
+            sort: "featured",
+            collection: "",
+            network: "",
+            priceMin: "",
+            priceMax: "",
           }}
         >
           KURIO
@@ -24,6 +33,11 @@ export function Header() {
             search={{
               search: "",
               page: 1,
+              sort: "featured",
+              collection: "",
+              network: "",
+              priceMin: "",
+              priceMax: "",
             }}
           >
             Inicio
@@ -35,7 +49,9 @@ export function Header() {
 
         {/*TODO SEARCHBAR*/}
         <div className="border flex items-center gap-8">
-          <button className="border">Search</button>
+          <button type="button" className="border" onClick={onSearchClick}>
+            Search
+          </button>
           <button className="border">Carrinho</button>
           <Button>Entrar</Button>
         </div>
@@ -43,5 +59,3 @@ export function Header() {
     </header>
   );
 }
-
-// export { Button, buttonVariants }

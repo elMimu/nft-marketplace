@@ -1,35 +1,23 @@
+import type { RefObject } from "react";
+
 interface SearchProps {
   value: string;
   onChange: (value: string) => void;
-  onSubmit: () => void;
   className?: string;
+  inputRef?: RefObject<HTMLInputElement | null>;
 }
 
-export function Search({
-  value,
-  onChange,
-  onSubmit,
-  className,
-}: SearchProps) {
+export function Search({ value, onChange, className, inputRef }: SearchProps) {
   return (
-    <form
-      className={className}
-      onSubmit={(event) => {
-        event.preventDefault();
-        onSubmit();
-      }}
-    >
+    <div className={className}>
       <input
-        className="flex-1 border px-3 py-2"
+        ref={inputRef}
+        className="w-full border px-3 py-2"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         type="search"
         placeholder="Buscar NFTs"
       />
-
-      <button type="submit" className="border px-4 py-2">
-        Buscar
-      </button>
-    </form>
+    </div>
   );
 }

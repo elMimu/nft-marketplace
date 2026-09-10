@@ -3,7 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Hero } from "@/components/home/Hero";
 
 import { useCatalogQuery } from "@/catalog/queries";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Sidebar } from "@/components/catalog/Sidebar";
 import { NftCard } from "@/components/catalog/NftCard";
 import { Search } from "@/components/catalog/Search";
@@ -27,11 +27,46 @@ function RouteComponent() {
   const [searchInput, setSearchInput] = useState(searchParams.search);
   const { data, isPending, isError } = useCatalogQuery(searchParams);
 
+  const desktopSearchRef = useRef<HTMLInputElement>(null);
+
   const navigate = Route.useNavigate();
 
-  function handleSearch() {
-    navigate({
-      search: (previous) => ({ ...previous, search: searchInput, page: 1 }),
+  useEffect(() => {
+    setSearchInput(searchParams.search);
+  }, [searchParams.search]);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      if (searchInput === searchParams.search) {
+        return;
+      }
+
+      navigate({
+        search: (previous) => ({
+          ...previous,
+          search: searchInput,
+          page: 1,
+        }),
+      });
+    }, 350);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [searchInput, searchParams.search, navigate]);
+
+  function handleSearchFocus() {
+    const input = desktopSearchRef.current;
+
+    if (!input) {
+      return;
+    }
+
+    input.focus({ preventScroll: true });
+
+    input.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
     });
   }
 
@@ -97,13 +132,12 @@ function RouteComponent() {
   return (
     <div className="">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-8">
-        <Header />
+        <Header onSearchClick={handleSearchFocus} />
         <div className="mx-auto w-full max-w-[1200px] px-4 lg:hidden">
           <Search
             value={searchInput}
             onChange={setSearchInput}
-            onSubmit={handleSearch}
-            className="flex gap-2"
+            className="flex-1"
           />
         </div>
         <MobileFilters
@@ -131,8 +165,8 @@ function RouteComponent() {
             <Search
               value={searchInput}
               onChange={setSearchInput}
-              onSubmit={handleSearch}
-              className="mb-6 hidden gap-2 lg:flex"
+              inputRef={desktopSearchRef}
+              className="mb-6 hidden lg:block"
             />
             {/* toolbar */}
             <div className="mb-7 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
