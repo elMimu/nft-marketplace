@@ -4,7 +4,13 @@ import { useState } from "react";
 
 import { useCart } from "@/cart/useCart";
 import { Button } from "@/components/ui/button";
-import { addEth, applyDiscountEth, multiplyEth } from "@/lib/eth";
+import {
+  addEth,
+  applyDiscountEth,
+  multiplyEth,
+  percentageEth,
+} from "@/lib/eth";
+import { useCreateOrderMutation } from "@/orders/mutations";
 
 interface PaymentPageProps {
   discountPercent: number;
@@ -27,17 +33,21 @@ const wallets = [
     symbol: "C",
   },
 ];
-
 export function PaymentPage({ discountPercent }: PaymentPageProps) {
   const { items, clearCart } = useCart();
   const navigate = useNavigate();
+  const createOrder = useCreateOrderMutation();
 
   const [wallet, setWallet] = useState("coinbase");
   const [mobileSuccess, setMobileSuccess] = useState(false);
+  const [orderError, setOrderError] = useState("");
+  const [idempotencyKey] = useState(() => crypto.randomUUID());
 
   const subtotal = addEth(
     items.map((item) => multiplyEth(item.priceEth, item.quantity)),
   );
+
+  const discount = percentageEth(subtotal, discountPercent);
 
   const total = applyDiscountEth(subtotal, discountPercent);
 
@@ -56,12 +66,16 @@ export function PaymentPage({ discountPercent }: PaymentPageProps) {
     });
   }
 
-  function confirmPurchase() {
-    const selectedWallet =
-      wallets.find((item) => item.id === wallet)?.name ?? wallet;
+  function handleOrderSuccess(order: {
+    transactionId: string;
+    date: string;
+    wallet: string;
+    total: string;
+    items: typeof items;
+  }) {
+    clearCart();
 
     if (window.innerWidth < 1024) {
-      clearCart();
       setMobileSuccess(true);
 
       window.setTimeout(() => {
@@ -71,21 +85,35 @@ export function PaymentPage({ discountPercent }: PaymentPageProps) {
       return;
     }
 
-    const order = {
-      transactionId: `0x${Date.now().toString(16).toUpperCase()}`,
-      date: new Date().toLocaleDateString("pt-BR"),
-      wallet: selectedWallet,
-      total,
-      items,
-    };
-
     sessionStorage.setItem("kurio-last-order", JSON.stringify(order));
-
-    clearCart();
 
     navigate({
       to: "/order-confirmation",
     });
+  }
+
+  function confirmPurchase() {
+    const selectedWallet =
+      wallets.find((item) => item.id === wallet)?.name ?? wallet;
+
+    setOrderError("");
+
+    createOrder.mutate(
+      {
+        idempotencyKey,
+        data: {
+          wallet: selectedWallet,
+          total,
+          items,
+        },
+      },
+      {
+        onSuccess: handleOrderSuccess,
+        onError: () => {
+          setOrderError("Não foi possível confirmar a compra.");
+        },
+      },
+    );
   }
 
   if (items.length === 0 && !mobileSuccess) {
@@ -222,9 +250,7 @@ export function PaymentPage({ discountPercent }: PaymentPageProps) {
                     Desconto ({discountPercent}%)
                   </span>
 
-                  <span>
-                    {applyDiscountEth(subtotal, 100 - discountPercent)} ETH
-                  </span>
+                  <span>- {discount} ETH</span>
                 </div>
               )}
 
@@ -235,12 +261,17 @@ export function PaymentPage({ discountPercent }: PaymentPageProps) {
               </div>
             </div>
 
+            {orderError && (
+              <p className="mt-4 text-sm text-destructive">{orderError}</p>
+            )}
+
             <Button
               type="button"
               className="mt-8 h-12 w-full font-semibold"
               onClick={confirmPurchase}
+              disabled={createOrder.isPending}
             >
-              Confirmar compra
+              {createOrder.isPending ? "Confirmando..." : "Confirmar compra"}
             </Button>
           </aside>
         </div>
