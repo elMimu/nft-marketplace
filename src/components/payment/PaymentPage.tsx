@@ -11,6 +11,7 @@ import {
   percentageEth,
 } from "@/lib/eth";
 import { useCreateOrderMutation } from "@/orders/mutations";
+import { socket } from "@/realtime/socket";
 
 interface PaymentPageProps {
   discountPercent: number;
@@ -33,6 +34,7 @@ const wallets = [
     symbol: "C",
   },
 ];
+
 export function PaymentPage({ discountPercent }: PaymentPageProps) {
   const { items, clearCart } = useCart();
   const navigate = useNavigate();
@@ -67,12 +69,19 @@ export function PaymentPage({ discountPercent }: PaymentPageProps) {
   }
 
   function handleOrderSuccess(order: {
+    id: string;
     transactionId: string;
     date: string;
     wallet: string;
     total: string;
     items: typeof items;
   }) {
+    if (import.meta.env.VITE_ENABLE_REALTIME_MOCK === "true") {
+      socket.emit("order.created", {
+        id: order.id,
+      });
+    }
+
     clearCart();
 
     if (window.innerWidth < 1024) {

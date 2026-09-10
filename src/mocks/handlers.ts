@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 
-import { nfts } from "./nfts";
+import { getMockNfts } from "./nft-state";
 
 interface OrderItem {
   id: string;
@@ -28,13 +28,12 @@ let orderCounter = 1;
 
 export const handlers = [
   http.get("/api/nfts/:id", ({ params }) => {
-    const nft = nfts.find((item) => item.id === params.id);
+    const nfts = getMockNfts();
+
+    const nft = nfts.find((item) => String(item.id) === String(params.id));
 
     if (!nft) {
-      return HttpResponse.json(
-        { message: "NFT not found" },
-        { status: 404 },
-      );
+      return HttpResponse.json({ message: "NFT not found" }, { status: 404 });
     }
 
     return HttpResponse.json(nft);
@@ -51,7 +50,7 @@ export const handlers = [
     const priceMin = url.searchParams.get("priceMin") ?? "";
     const priceMax = url.searchParams.get("priceMax") ?? "";
 
-    let filteredNfts = [...nfts];
+    let filteredNfts = getMockNfts();
 
     if (search) {
       filteredNfts = filteredNfts.filter((nft) =>
@@ -66,9 +65,7 @@ export const handlers = [
     }
 
     if (network) {
-      filteredNfts = filteredNfts.filter(
-        (nft) => nft.network === network,
-      );
+      filteredNfts = filteredNfts.filter((nft) => nft.network === network);
     }
 
     if (priceMin) {
@@ -84,15 +81,11 @@ export const handlers = [
     }
 
     if (sort === "price-asc") {
-      filteredNfts.sort(
-        (a, b) => Number(a.priceEth) - Number(b.priceEth),
-      );
+      filteredNfts.sort((a, b) => Number(a.priceEth) - Number(b.priceEth));
     }
 
     if (sort === "price-desc") {
-      filteredNfts.sort(
-        (a, b) => Number(b.priceEth) - Number(a.priceEth),
-      );
+      filteredNfts.sort((a, b) => Number(b.priceEth) - Number(a.priceEth));
     }
 
     const pageSize = 9;
@@ -120,8 +113,7 @@ export const handlers = [
       );
     }
 
-    const existingOrder =
-      ordersByIdempotencyKey.get(idempotencyKey);
+    const existingOrder = ordersByIdempotencyKey.get(idempotencyKey);
 
     if (existingOrder) {
       return HttpResponse.json(existingOrder);
@@ -140,23 +132,15 @@ export const handlers = [
 
     const order: Order = {
       id: `order-${orderNumber}`,
-      transactionId: `0x${orderNumber
-        .toString(16)
-        .padStart(16, "0")}`,
+      transactionId: `0x${orderNumber.toString(16).padStart(16, "0")}`,
       date: new Date().toLocaleDateString("pt-BR"),
       wallet: body.wallet,
       total: body.total,
       items: body.items,
     };
 
-    ordersByIdempotencyKey.set(
-      idempotencyKey,
-      order,
-    );
+    ordersByIdempotencyKey.set(idempotencyKey, order);
 
-    return HttpResponse.json(
-      order,
-      { status: 201 },
-    );
+    return HttpResponse.json(order, { status: 201 });
   }),
 ];

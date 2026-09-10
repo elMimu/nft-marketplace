@@ -1,8 +1,10 @@
 import { CheckCircle2 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { multiplyEth } from "@/lib/eth";
+import { socket } from "@/realtime/socket";
 
 interface OrderItem {
   id: string;
@@ -13,11 +15,17 @@ interface OrderItem {
 }
 
 interface Order {
+  id: string;
   transactionId: string;
   date: string;
   wallet: string;
   total: string;
   items: OrderItem[];
+}
+
+interface OrderUpdatedEvent {
+  id: string;
+  status: string;
 }
 
 function loadOrder(): Order | null {
@@ -36,7 +44,32 @@ function loadOrder(): Order | null {
 
 export function OrderConfirmation() {
   const navigate = useNavigate();
-  const order = loadOrder();
+  const [order] = useState(loadOrder);
+  const [showRealtimeMessage, setShowRealtimeMessage] = useState(false);
+
+  useEffect(() => {
+    if (!order || import.meta.env.VITE_ENABLE_REALTIME_MOCK !== "true") {
+      return;
+    }
+
+    function handleOrderUpdated(event: OrderUpdatedEvent) {
+      if (event.id !== order?.id || event.status !== "confirmed") {
+        return;
+      }
+
+      setShowRealtimeMessage(true);
+
+      window.setTimeout(() => {
+        setShowRealtimeMessage(false);
+      }, 2000);
+    }
+
+    socket.on("order.updated", handleOrderUpdated);
+
+    return () => {
+      socket.off("order.updated", handleOrderUpdated);
+    };
+  }, [order]);
 
   function goHome() {
     sessionStorage.removeItem("kurio-last-order");
@@ -70,82 +103,101 @@ export function OrderConfirmation() {
   }
 
   return (
-    <main className="hidden min-h-screen items-start justify-center px-6 py-28 lg:flex">
-      <section className="w-full max-w-[620px] rounded-[28px] border p-8">
-        <div className="text-center">
-          <CheckCircle2 className="mx-auto h-14 w-14" />
-
-          <h1 className="mt-5 text-2xl font-bold">Compra confirmada</h1>
-
-          <p className="mt-2 text-muted-foreground">
-            Seus NFTs agora estão na sua carteira.
-          </p>
+    <>
+      {showRealtimeMessage && (
+        <div
+          className="
+            fixed left-1/2 top-6 z-50
+            -translate-x-1/2
+            rounded-xl border bg-background
+            px-5 py-3 shadow-lg
+          "
+        >
+          Pedido confirmado em tempo real
         </div>
+      )}
 
-        <div className="mt-8 grid grid-cols-4 gap-4 border-y py-5 text-sm">
-          <div>
-            <p className="text-muted-foreground">Transação</p>
+      <main className="hidden min-h-screen items-start justify-center px-6 py-28 lg:flex">
+        <section className="w-full max-w-[620px] rounded-[28px] border p-8">
+          <div className="text-center">
+            <CheckCircle2 className="mx-auto h-14 w-14" />
 
-            <p className="mt-1 truncate font-semibold">{order.transactionId}</p>
+            <h1 className="mt-5 text-2xl font-bold">Compra confirmada</h1>
+
+            <p className="mt-2 text-muted-foreground">
+              Seus NFTs agora estão na sua carteira.
+            </p>
           </div>
 
-          <div>
-            <p className="text-muted-foreground">Data</p>
+          <div className="mt-8 grid grid-cols-4 gap-4 border-y py-5 text-sm">
+            <div>
+              <p className="text-muted-foreground">Transação</p>
 
-            <p className="mt-1 font-semibold">{order.date}</p>
+              <p className="mt-1 truncate font-semibold">
+                {order.transactionId}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-muted-foreground">Data</p>
+
+              <p className="mt-1 font-semibold">{order.date}</p>
+            </div>
+
+            <div>
+              <p className="text-muted-foreground">Total</p>
+
+              <p className="mt-1 font-semibold">{order.total} ETH</p>
+            </div>
+
+            <div>
+              <p className="text-muted-foreground">Carteira</p>
+
+              <p className="mt-1 font-semibold">{order.wallet}</p>
+            </div>
           </div>
 
-          <div>
-            <p className="text-muted-foreground">Total</p>
+          <div className="mt-8">
+            <h2 className="text-lg font-semibold">Detalhes da transação</h2>
 
-            <p className="mt-1 font-semibold">{order.total} ETH</p>
-          </div>
+            <div className="mt-4 space-y-4">
+              {order.items.map((item) => (
+                <div key={item.id} className="flex items-center gap-4">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.name}
+                    className="h-16 w-16 rounded-xl object-cover"
+                  />
 
-          <div>
-            <p className="text-muted-foreground">Carteira</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-semibold">{item.name}</p>
 
-            <p className="mt-1 font-semibold">{order.wallet}</p>
-          </div>
-        </div>
+                    <p className="text-sm text-muted-foreground">
+                      ID do token: #{item.id}
+                    </p>
+                  </div>
 
-        <div className="mt-8">
-          <h2 className="text-lg font-semibold">Detalhes da transação</h2>
+                  <span className="text-sm">× {item.quantity}</span>
 
-          <div className="mt-4 space-y-4">
-            {order.items.map((item) => (
-              <div key={item.id} className="flex items-center gap-4">
-                <img
-                  src={item.imageUrl}
-                  alt={item.name}
-                  className="h-16 w-16 rounded-xl object-cover"
-                />
-
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold">{item.name}</p>
-
-                  <p className="text-sm text-muted-foreground">
-                    ID do token: #{item.id}
-                  </p>
+                  <strong>
+                    {multiplyEth(item.priceEth, item.quantity)} ETH
+                  </strong>
                 </div>
-
-                <span className="text-sm">× {item.quantity}</span>
-
-                <strong>{multiplyEth(item.priceEth, item.quantity)} ETH</strong>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="mt-8 flex items-center justify-between border-t pt-5">
-          <strong>Total</strong>
+          <div className="mt-8 flex items-center justify-between border-t pt-5">
+            <strong>Total</strong>
 
-          <strong className="text-xl">{order.total} ETH</strong>
-        </div>
+            <strong className="text-xl">{order.total} ETH</strong>
+          </div>
 
-        <Button type="button" className="mt-8 w-full" onClick={goHome}>
-          Voltar ao mercado
-        </Button>
-      </section>
-    </main>
+          <Button type="button" className="mt-8 w-full" onClick={goHome}>
+            Voltar ao mercado
+          </Button>
+        </section>
+      </main>
+    </>
   );
 }

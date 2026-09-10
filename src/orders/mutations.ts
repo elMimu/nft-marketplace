@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
-import type { CartItem } from "@/cart/useCart";
 import { apiClient } from "@/api/client";
+import type { CartItem } from "@/cart/useCart";
 
 interface CreateOrderData {
   wallet: string;
