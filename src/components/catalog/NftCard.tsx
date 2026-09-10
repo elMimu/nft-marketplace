@@ -22,9 +22,9 @@ export function NftCard({ nft }: NftCardProps) {
         <div
           className="
             aspect-square
-            rounded-[24px]
             bg-card
-            p-2
+            py-4
+            px-2
           "
         >
           <div
