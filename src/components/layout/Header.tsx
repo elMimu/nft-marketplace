@@ -15,17 +15,21 @@ const HOME_SEARCH = {
   priceMax: "",
 } as const;
 
+interface HeaderProps {
+  onSearchClick?: () => void;
+}
+
 function navClass(active: boolean) {
   return [
     "flex h-full items-center border-b-4 px-1",
     "text-[16px] font-normal transition-colors",
     active
-      ? "border-primary text-[var(--text-accent)]"
+      ? "border-primary text-accent"
       : "border-transparent text-foreground",
   ].join(" ");
 }
 
-export function Header() {
+export function Header({ onSearchClick }: HeaderProps) {
   const navigate = useNavigate();
 
   const pathname = useRouterState({
@@ -41,30 +45,27 @@ export function Header() {
   const marketActive = pathname === "/cart";
 
   async function handleSearch() {
+    if (onSearchClick) {
+      onSearchClick();
+      return;
+    }
+
     if (pathname !== "/") {
       await navigate({
         to: "/",
         search: HOME_SEARCH,
       });
     }
-
-    window.setTimeout(() => {
-      const inputs = Array.from(
-        document.querySelectorAll<HTMLInputElement>("input"),
-      );
-
-      const searchInput = inputs.find(
-        (input) =>
-          input.offsetParent !== null &&
-          input.placeholder.toLowerCase().includes("buscar"),
-      );
-
-      searchInput?.focus();
-    }, 0);
   }
 
   return (
-    <header className="hidden border-b-[0.3px] border-primary bg-background lg:block">
+    <header
+      className="
+        hidden border-b-[0.3px]
+        border-primary bg-background
+        lg:block
+      "
+    >
       <div
         className="
           grid h-[76px] w-full
@@ -77,7 +78,8 @@ export function Header() {
             to="/"
             search={HOME_SEARCH}
             className="
-              text-[14px] font-bold tracking-[0.12em]
+              text-[14px] font-bold
+              tracking-[0.12em]
               text-foreground
             "
           >
@@ -86,7 +88,10 @@ export function Header() {
         </div>
 
         <nav
-          className="flex h-full items-center gap-10"
+          className="
+            flex h-full
+            items-center gap-12
+          "
           aria-label="Navegação principal"
         >
           <Link
@@ -121,7 +126,8 @@ export function Header() {
             onClick={handleSearch}
             className="
               flex h-full items-center
-              text-foreground transition-colors
+              text-foreground
+              transition-colors
               hover:text-accent
             "
             aria-label="Buscar NFTs"
@@ -132,8 +138,10 @@ export function Header() {
           <Link
             to="/cart"
             className="
-              relative flex h-full items-center
-              text-foreground transition-colors
+              relative flex h-full
+              items-center
+              text-foreground
+              transition-colors
               hover:text-accent
             "
             aria-label={`Carrinho com ${cartCount} itens`}
@@ -143,9 +151,11 @@ export function Header() {
             {cartCount > 0 && (
               <span
                 className="
-                  absolute right-[-12px] top-[12px]
-                  flex h-5 min-w-5 items-center
-                  justify-center rounded-full
+                  absolute right-[-12px]
+                  top-[12px]
+                  flex h-5 min-w-5
+                  items-center justify-center
+                  rounded-full
                   bg-primary px-1
                   text-xs font-bold
                   text-primary-foreground
@@ -162,7 +172,8 @@ export function Header() {
               className="
                 flex h-full items-center
                 justify-center px-3
-                text-foreground transition-colors
+                text-foreground
+                transition-colors
                 hover:text-accent
               "
               aria-label="Meu perfil"
@@ -174,9 +185,11 @@ export function Header() {
               triggerLabel="Entrar"
               triggerIcon={<LogIn className="h-5 w-5" strokeWidth={2} />}
               triggerClassName="
-                h-11 gap-2 rounded-[6px]
+                h-11 gap-2
+                rounded-[6px]
                 bg-primary px-5
-                text-[16px] font-medium
+                text-[16px]
+                font-medium
                 text-primary-foreground
                 hover:bg-accent
               "

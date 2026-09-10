@@ -7,9 +7,9 @@ import { MobileFilters } from "@/components/catalog/MobileFilters";
 import { NftCard } from "@/components/catalog/NftCard";
 import { Search } from "@/components/catalog/Search";
 import { Sidebar } from "@/components/catalog/Sidebar";
+import { EditorialSection } from "@/components/home/EditorialSelection";
 import { Hero } from "@/components/home/Hero";
 import { Header } from "@/components/layout/Header";
-import { EditorialSection } from "@/components/home/EditorialSelection";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => ({
@@ -42,10 +42,13 @@ function getVisiblePages(currentPage: number, totalPages: number) {
 
 function RouteComponent() {
   const searchParams = Route.useSearch();
+
   const [searchInput, setSearchInput] = useState(searchParams.search);
+
   const { data, isPending, isError } = useCatalogQuery(searchParams);
 
   const desktopSearchRef = useRef<HTMLInputElement>(null);
+
   const navigate = Route.useNavigate();
 
   useEffect(() => {
@@ -79,7 +82,9 @@ function RouteComponent() {
       return;
     }
 
-    input.focus({ preventScroll: true });
+    input.focus({
+      preventScroll: true,
+    });
 
     input.scrollIntoView({
       behavior: "smooth",
@@ -156,13 +161,19 @@ function RouteComponent() {
   }
 
   return (
-    <div className="pb-24 lg:pb-0">
+    <div className="pb-28 lg:pb-0">
       <div className="mx-auto w-full max-w-[1200px]">
-        <div className="flex gap-3 px-6 pt-4 lg:hidden">
+        <div
+          className="
+            flex gap-3
+            px-6 pt-5
+            lg:hidden
+          "
+        >
           <Search
             value={searchInput}
             onChange={setSearchInput}
-            className="min-w-0 flex-1"
+            className="min-w-0 flex-1 mb-2"
           />
 
           <MobileFilters
@@ -176,7 +187,7 @@ function RouteComponent() {
           />
         </div>
 
-        <div className="flex flex-col gap-8 lg:gap-8">
+        <div className="flex flex-col gap-8">
           <Header onSearchClick={handleSearchFocus} />
 
           <div className="px-6 lg:px-0">
@@ -185,8 +196,21 @@ function RouteComponent() {
         </div>
       </div>
 
-      <main className="mx-auto mt-8 w-full max-w-[1200px] px-6 lg:mt-12 lg:px-0">
-        <div className="grid gap-10 lg:grid-cols-[260px_minmax(0,1fr)]">
+      <main
+        id="catalog"
+        className="
+          mx-auto mt-7
+          w-full max-w-[1200px]
+          px-6
+          lg:mt-12 lg:px-0
+        "
+      >
+        <div
+          className="
+            grid gap-10
+            lg:grid-cols-[260px_minmax(0,1fr)]
+          "
+        >
           <Sidebar
             collection={searchParams.collection}
             network={searchParams.network}
@@ -202,56 +226,81 @@ function RouteComponent() {
               value={searchInput}
               onChange={setSearchInput}
               inputRef={desktopSearchRef}
-              className="mb-6 hidden lg:block"
+              className="
+                mb-6 hidden
+                lg:flex
+              "
             />
 
-            <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-              <div className="flex gap-6 overflow-x-auto whitespace-nowrap">
-                <button
-                  type="button"
+            <div
+              className="
+                mb-7 flex
+                items-end justify-between
+              "
+            >
+              <div
+                className="
+                  flex gap-4
+                  overflow-x-auto
+                  whitespace-nowrap
+                  lg:gap-6
+                "
+              >
+                <span
                   className="
                     shrink-0
-                    border-b-[3px] border-primary
+                    border-b-[3px]
+                    border-primary
                     pb-2
-                    text-[14px] font-medium
+                    text-[16px]
+                    font-bold
                     text-accent
+                    lg:text-[14px]
+                    lg:font-medium
                   "
                 >
                   Todos os NFTs
-                </button>
+                </span>
 
-                <button
-                  type="button"
+                <span
                   className="
                     shrink-0
-                    border-b-[3px] border-transparent
+                    border-b-[3px]
+                    border-transparent
                     pb-2
-                    text-[14px] font-normal
-                    text-muted-foreground
-                    transition-colors
-                    hover:text-foreground
+                    text-[16px]
+                    font-normal
+                    text-foreground
+                    lg:text-[14px]
+                    lg:text-muted-foreground
                   "
                 >
                   Novos lançamentos
-                </button>
+                </span>
 
-                <button
-                  type="button"
+                <span
                   className="
                     shrink-0
-                    border-b-[3px] border-transparent
+                    border-b-[3px]
+                    border-transparent
                     pb-2
-                    text-[14px] font-normal
-                    text-muted-foreground
-                    transition-colors
-                    hover:text-foreground
+                    text-[16px]
+                    font-normal
+                    text-foreground
+                    lg:text-[14px]
+                    lg:text-muted-foreground
                   "
                 >
                   Em alta
-                </button>
+                </span>
               </div>
 
-              <label className="hidden items-center gap-2 lg:flex">
+              <label
+                className="
+                  hidden items-center
+                  gap-2 lg:flex
+                "
+              >
                 <span className="text-[14px] text-muted-foreground">
                   Ordenar por:
                 </span>
@@ -261,7 +310,8 @@ function RouteComponent() {
                   onChange={(event) => handleSort(event.target.value)}
                   className="
                     bg-background
-                    text-[14px] text-foreground
+                    text-[14px]
+                    text-foreground
                     outline-none
                   "
                 >
@@ -275,27 +325,37 @@ function RouteComponent() {
             </div>
 
             {data && (
-              <p className="mb-4 text-[14px] text-muted-foreground">
+              <p
+                className="
+                  mb-4 hidden
+                  text-[14px]
+                  text-muted-foreground
+                  lg:block
+                "
+              >
                 Página {data.page} de {data.totalPages} · {data.totalItems} NFTs
               </p>
             )}
 
             {isPending && (
-              <p className="text-muted-foreground">Loading NFTs...</p>
+              <p className="text-muted-foreground">Carregando NFTs...</p>
             )}
 
             {isError && (
-              <p className="text-muted-foreground">Unable to load NFTs.</p>
+              <p className="text-muted-foreground">
+                Não foi possível carregar os NFTs.
+              </p>
             )}
 
             {data && data.items.length > 0 && (
               <div
                 className="
-                  grid grid-cols-2
-                  gap-x-4 gap-y-8
-                  lg:grid-cols-3
-                  lg:gap-x-8 lg:gap-y-14
-                "
+                    grid grid-cols-2
+                    gap-x-4 gap-y-10
+                    lg:grid-cols-3
+                    lg:gap-x-8
+                    lg:gap-y-14
+                  "
               >
                 {data.items.map((nft) => (
                   <NftCard key={nft.id} nft={nft} />
@@ -312,21 +372,23 @@ function RouteComponent() {
             {data && data.totalPages > 1 && (
               <div
                 className="
-                  mt-10 flex items-center
-                  justify-center gap-2
-                  lg:justify-end
-                "
+                    mt-10 flex
+                    items-center
+                    justify-center gap-2
+                    lg:justify-end
+                  "
               >
                 <button
                   type="button"
                   onClick={handlePreviousPage}
                   disabled={data.page <= 1}
                   className="
-                    flex h-8 w-8
-                    items-center justify-center
-                    text-foreground
-                    disabled:opacity-40
-                  "
+                      flex h-8 w-8
+                      items-center
+                      justify-center
+                      text-foreground
+                      disabled:opacity-40
+                    "
                   aria-label="Página anterior"
                 >
                   &lt;
@@ -341,16 +403,17 @@ function RouteComponent() {
                       type="button"
                       onClick={() => handlePage(page)}
                       className={`
-                        flex h-8 w-8
-                        items-center justify-center
-                        rounded-[6px]
-                        text-[14px] font-medium
-                        transition-colors
-                        ${selected
+                          flex h-8 w-8
+                          items-center
+                          justify-center
+                          rounded-[6px]
+                          text-[14px]
+                          font-medium
+                          ${selected
                           ? "bg-primary text-[var(--link)]"
-                          : "bg-card text-foreground hover:bg-muted"
+                          : "bg-card text-foreground"
                         }
-                      `}
+                        `}
                       aria-current={selected ? "page" : undefined}
                     >
                       {page}
@@ -363,11 +426,12 @@ function RouteComponent() {
                   onClick={handleNextPage}
                   disabled={data.page >= data.totalPages}
                   className="
-                    flex h-8 w-8
-                    items-center justify-center
-                    text-foreground
-                    disabled:opacity-40
-                  "
+                      flex h-8 w-8
+                      items-center
+                      justify-center
+                      text-foreground
+                      disabled:opacity-40
+                    "
                   aria-label="Próxima página"
                 >
                   &gt;
@@ -376,10 +440,11 @@ function RouteComponent() {
             )}
           </section>
         </div>
-
-        <MobileBottomNav />
       </main>
+
       <EditorialSection />
+
+      <MobileBottomNav />
     </div>
   );
 }

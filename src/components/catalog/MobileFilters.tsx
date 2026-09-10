@@ -1,9 +1,10 @@
 import { SlidersHorizontal } from "lucide-react";
 
-import { Filters } from "./Filters";
+import { Filters } from "@/components/catalog/Filters";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -14,9 +15,16 @@ interface MobileFiltersProps {
   network: string;
   priceMin: string;
   priceMax: string;
-  onCollectionChange: (collection: string) => void;
-  onNetworkChange: (network: string) => void;
-  onPriceApply: (priceMin: string, priceMax: string) => void;
+  onCollectionChange: (
+    collection: string,
+  ) => void;
+  onNetworkChange: (
+    network: string,
+  ) => void;
+  onPriceApply: (
+    priceMin: string,
+    priceMax: string,
+  ) => void;
 }
 
 export function MobileFilters({
@@ -34,48 +42,55 @@ export function MobileFilters({
         render={
           <button
             type="button"
-            aria-label="Abrir filtros"
             className="
-              flex h-12 w-12 shrink-0 items-center justify-center
-              rounded-xl border
+              flex h-[56px] w-[56px]
+              shrink-0 items-center
+              justify-center
+              rounded-[18px]
+              bg-primary
+              text-[var(--link)]
+              transition-colors
+              hover:bg-accent
             "
-          />
+            aria-label="Abrir filtros"
+          >
+            <SlidersHorizontal
+              className="h-6 w-6"
+              strokeWidth={2}
+            />
+          </button>
         }
-      >
-        <SlidersHorizontal className="h-5 w-5" />
-      </SheetTrigger>
+      />
 
       <SheetContent
         side="right"
         className="
-          w-[86vw] max-w-[360px]
-          overflow-y-auto
-          rounded-l-[28px]
-          border-l
-          p-0
+          w-[90vw] max-w-[360px]
+          border-0 bg-card
         "
       >
-        <SheetHeader
-          className="
-            sticky top-0 z-10
-            border-b
-            bg-background
-            px-6 py-5
-          "
-        >
-          <SheetTitle className="text-xl font-semibold">
+        <SheetHeader>
+          <SheetTitle className="text-foreground">
             Filtros
           </SheetTitle>
+
+          <SheetDescription className="sr-only">
+            Filtre os NFTs por coleção, preço e rede.
+          </SheetDescription>
         </SheetHeader>
 
-        <div className="px-6 py-6">
+        <div className="overflow-y-auto px-4 pb-10">
           <Filters
             collection={collection}
             network={network}
             priceMin={priceMin}
             priceMax={priceMax}
-            onCollectionChange={onCollectionChange}
-            onNetworkChange={onNetworkChange}
+            onCollectionChange={
+              onCollectionChange
+            }
+            onNetworkChange={
+              onNetworkChange
+            }
             onPriceApply={onPriceApply}
           />
         </div>

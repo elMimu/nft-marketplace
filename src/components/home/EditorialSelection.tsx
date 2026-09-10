@@ -1,34 +1,26 @@
 import { ArrowRight } from "lucide-react";
 
-import { useCatalogQuery } from "@/catalog/queries";
-
-const EDITORIAL_SEARCH = {
-  search: "",
-  page: 1,
-  sort: "featured",
-  collection: "",
-  network: "",
-  priceMin: "",
-  priceMax: "",
-};
+import nftHero1 from "@/assets/images/nft-hero1.png";
+import nftHero2 from "@/assets/images/nft-hero2.png";
+import nftHero3 from "@/assets/images/nft-hero3.png";
 
 const articles = [
   {
-    index: 2,
+    image: nftHero3,
     date: "12 de setembro",
     readTime: "6 min",
     title: "Como funciona a propriedade de NFTs",
     description: "Aprenda a colecionar, negociar e verificar ativos digitais.",
   },
   {
-    index: 0,
+    image: nftHero1,
     date: "13 de setembro",
     readTime: "2 min",
     title: "10 artistas digitais para acompanhar",
     description: "Conheça criadores que moldam a cultura digital.",
   },
   {
-    index: 1,
+    image: nftHero2,
     date: "15 de setembro",
     readTime: "3 min",
     title: "Raridade, atributos e procedência",
@@ -36,7 +28,7 @@ const articles = [
       "Entenda raridade, procedência, direitos autorais e utilidade.",
   },
   {
-    index: 3,
+    image: nftHero3,
     date: "15 de setembro",
     readTime: "2 min",
     title: "Como proteger sua carteira",
@@ -45,15 +37,6 @@ const articles = [
 ];
 
 export function EditorialSection() {
-  const { data } = useCatalogQuery(EDITORIAL_SEARCH);
-
-  if (!data || data.items.length < 4) {
-    return null;
-  }
-
-  const firstPromo = data.items[0];
-  const secondPromo = data.items[2];
-
   return (
     <section
       className="
@@ -72,8 +55,8 @@ export function EditorialSection() {
           "
         >
           <img
-            src={firstPromo.imageUrl}
-            alt={firstPromo.name}
+            src={nftHero1}
+            alt="Lançamentos gênesis de edição limitada"
             className="
               aspect-square w-full
               object-cover
@@ -139,8 +122,8 @@ export function EditorialSection() {
           "
         >
           <img
-            src={secondPromo.imageUrl}
-            alt={secondPromo.name}
+            src={nftHero2}
+            alt="Arte digital selecionada"
             className="
               aspect-square w-full
               object-cover
@@ -220,82 +203,72 @@ export function EditorialSection() {
         </p>
       </div>
 
-      <div
-        className="
-          mt-10 grid gap-6
-          sm:grid-cols-2
-          lg:grid-cols-4
-        "
-      >
-        {articles.map((article) => {
-          const nft = data.items[article.index];
-
-          return (
-            <article
-              key={article.title}
+      <div className="mt-10 grid gap-6 lg:grid-cols-4">
+        {articles.map((article) => (
+          <article
+            key={article.title}
+            className="
+              overflow-hidden
+              rounded-[6px]
+              bg-card
+            "
+          >
+            <img
+              src={article.image}
+              alt={article.title}
               className="
-                overflow-hidden
-                rounded-[6px]
-                bg-card
+                aspect-[4/3] w-full
+                object-cover
               "
-            >
-              <img
-                src={nft.imageUrl}
-                alt={nft.name}
+            />
+
+            <div className="p-4">
+              <p
                 className="
-                  aspect-[4/3] w-full
-                  object-cover
+                  text-[12px] font-normal
+                  leading-[18px]
+                  text-muted-foreground
                 "
-              />
+              >
+                {article.date}
+                <span className="mx-3">|</span>
+                Leitura de {article.readTime}
+              </p>
 
-              <div className="p-4">
-                <p
-                  className="
-                    text-[12px] font-normal
-                    leading-[18px]
-                    text-muted-foreground
-                  "
-                >
-                  {article.date}
-                  <span className="mx-3">|</span>
-                  Leitura de {article.readTime}
-                </p>
+              <h3
+                className="
+                  mt-3 text-[16px]
+                  font-bold leading-[22px]
+                  text-foreground
+                "
+              >
+                {article.title}
+              </h3>
 
-                <h3
-                  className="
-                    mt-3 text-[16px]
-                    font-bold leading-[22px]
-                    text-foreground
-                  "
-                >
-                  {article.title}
-                </h3>
+              <p
+                className="
+                  mt-2 text-[13px]
+                  font-normal leading-[20px]
+                  text-muted-foreground
+                "
+              >
+                {article.description}
+              </p>
 
-                <p
-                  className="
-                    mt-2 text-[13px]
-                    font-normal leading-[20px]
-                    text-muted-foreground
-                  "
-                >
-                  {article.description}
-                </p>
-
-                <span
-                  className="
-                    mt-3 inline-flex
-                    cursor-default items-center gap-2
-                    text-[13px] font-bold
-                    text-accent
-                  "
-                >
-                  Ler mais
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </span>
-              </div>
-            </article>
-          );
-        })}
+              <span
+                className="
+                  mt-3 inline-flex
+                  cursor-default items-center gap-2
+                  text-[13px] font-bold
+                  text-accent
+                "
+              >
+                Ler mais
+                <ArrowRight className="h-3.5 w-3.5" />
+              </span>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );

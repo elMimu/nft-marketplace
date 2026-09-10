@@ -11,11 +11,18 @@ interface NftCardProps {
 
 export function NftCard({ nft }: NftCardProps) {
   return (
-    <Link to="/nfts/$nftId" params={{ nftId: nft.id }} className="block">
+    <Link
+      to="/nfts/$nftId"
+      params={{
+        nftId: nft.id,
+      }}
+      className="block min-w-0"
+    >
       <article className="min-w-0">
         <div
           className="
             aspect-square
+            rounded-[24px]
             bg-card
             p-2
           "
@@ -24,7 +31,7 @@ export function NftCard({ nft }: NftCardProps) {
             className="
               h-full w-full
               overflow-hidden
-              rounded-[18px]
+              rounded-[20px]
             "
           >
             <img
@@ -33,20 +40,17 @@ export function NftCard({ nft }: NftCardProps) {
               className="
                 h-full w-full
                 object-cover
-                transition-transform
-                duration-200
-                hover:scale-[1.02]
               "
             />
           </div>
         </div>
 
-        <div className="pt-3">
+        <div className="px-2 pt-3">
           <h3
             className="
               truncate
               text-[16px]
-              font-medium
+              font-normal
               leading-[24px]
               text-foreground
             "
@@ -56,7 +60,6 @@ export function NftCard({ nft }: NftCardProps) {
 
           <p
             className="
-              mt-1
               text-[16px]
               font-bold
               leading-[24px]

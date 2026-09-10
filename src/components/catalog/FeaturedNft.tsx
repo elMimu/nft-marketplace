@@ -1,4 +1,4 @@
-import heroImage from "@/assets/images/nft-hero.png";
+import heroImage from "@/assets/images/nft-hero3.png";
 
 export function FeaturedNft() {
   return (
