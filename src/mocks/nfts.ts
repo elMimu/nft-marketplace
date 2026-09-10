@@ -12,7 +12,7 @@ export const nfts: NftItem[] = [
   {
     id: "2",
     name: "Cyber Skull #018",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/golden-beat.png",
     priceEth: "0.85",
     collection: "photography",
     network: "polygon",
@@ -28,7 +28,7 @@ export const nfts: NftItem[] = [
   {
     id: "4",
     name: "Golden Phantom #063",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/neon-vessel.png",
     priceEth: "0.95",
     collection: "3d-art",
     network: "ethereum",
@@ -44,7 +44,7 @@ export const nfts: NftItem[] = [
   {
     id: "6",
     name: "Quantum Fox #024",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/sage-nomad.png",
     priceEth: "0.72",
     collection: "generative",
     network: "solana",
@@ -60,7 +60,7 @@ export const nfts: NftItem[] = [
   {
     id: "8",
     name: "Pixel Dragon #037",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/golden-beat.png",
     priceEth: "2.10",
     collection: "subscriptions",
     network: "polygon",
@@ -76,7 +76,7 @@ export const nfts: NftItem[] = [
   {
     id: "10",
     name: "Shadow Cobra #112",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/neon-vessel.png",
     priceEth: "0.90",
     collection: "digital-art",
     network: "ethereum",
@@ -92,7 +92,7 @@ export const nfts: NftItem[] = [
   {
     id: "12",
     name: "Void Panther #029",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/sage-nomad.png",
     priceEth: "1.15",
     collection: "music",
     network: "solana",
@@ -108,7 +108,7 @@ export const nfts: NftItem[] = [
   {
     id: "14",
     name: "Lunar Gorilla #144",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/golden-beat.png",
     priceEth: "1.82",
     collection: "collectibles",
     network: "polygon",
@@ -124,7 +124,7 @@ export const nfts: NftItem[] = [
   {
     id: "16",
     name: "Glitch Samurai #208",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/neon-vessel.png",
     priceEth: "2.35",
     collection: "games",
     network: "ethereum",
@@ -140,7 +140,7 @@ export const nfts: NftItem[] = [
   {
     id: "18",
     name: "Astral Whale #019",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/sage-nomad.png",
     priceEth: "3.20",
     collection: "utility",
     network: "solana",
@@ -156,7 +156,7 @@ export const nfts: NftItem[] = [
   {
     id: "20",
     name: "Digital Knight #132",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/golden-beat.png",
     priceEth: "0.88",
     collection: "photography",
     network: "polygon",
@@ -172,7 +172,7 @@ export const nfts: NftItem[] = [
   {
     id: "22",
     name: "Chrome Rabbit #105",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/neon-vessel.png",
     priceEth: "0.64",
     collection: "3d-art",
     network: "ethereum",
@@ -188,7 +188,7 @@ export const nfts: NftItem[] = [
   {
     id: "24",
     name: "Meta Tiger #178",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/sage-nomad.png",
     priceEth: "2.48",
     collection: "generative",
     network: "solana",
@@ -204,7 +204,7 @@ export const nfts: NftItem[] = [
   {
     id: "26",
     name: "Hologram Fox #093",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/golden-beat.png",
     priceEth: "0.93",
     collection: "subscriptions",
     network: "polygon",
@@ -220,7 +220,7 @@ export const nfts: NftItem[] = [
   {
     id: "28",
     name: "Cyber Panda #147",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/neon-vessel.png",
     priceEth: "1.19",
     collection: "digital-art",
     network: "ethereum",
@@ -236,7 +236,7 @@ export const nfts: NftItem[] = [
   {
     id: "30",
     name: "Ghost Eagle #116",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/sage-nomad.png",
     priceEth: "0.81",
     collection: "music",
     network: "solana",
@@ -252,7 +252,7 @@ export const nfts: NftItem[] = [
   {
     id: "32",
     name: "Synth Monkey #189",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/golden-beat.png",
     priceEth: "0.69",
     collection: "collectibles",
     network: "polygon",
@@ -268,7 +268,7 @@ export const nfts: NftItem[] = [
   {
     id: "34",
     name: "Diamond Cobra #103",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/neon-vessel.png",
     priceEth: "1.48",
     collection: "games",
     network: "ethereum",
@@ -284,7 +284,7 @@ export const nfts: NftItem[] = [
   {
     id: "36",
     name: "Stellar Owl #151",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/sage-nomad.png",
     priceEth: "1.84",
     collection: "utility",
     network: "solana",
@@ -300,7 +300,7 @@ export const nfts: NftItem[] = [
   {
     id: "38",
     name: "Mecha Bear #124",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/golden-beat.png",
     priceEth: "2.72",
     collection: "photography",
     network: "polygon",
@@ -316,7 +316,7 @@ export const nfts: NftItem[] = [
   {
     id: "40",
     name: "Pixel Samurai #017",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/neon-vessel.png",
     priceEth: "0.97",
     collection: "3d-art",
     network: "ethereum",
@@ -332,7 +332,7 @@ export const nfts: NftItem[] = [
   {
     id: "42",
     name: "Dark Matter Ape #048",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/sage-nomad.png",
     priceEth: "1.58",
     collection: "generative",
     network: "solana",
@@ -348,7 +348,7 @@ export const nfts: NftItem[] = [
   {
     id: "44",
     name: "Neon Octopus #137",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/golden-beat.png",
     priceEth: "0.89",
     collection: "subscriptions",
     network: "polygon",
@@ -364,7 +364,7 @@ export const nfts: NftItem[] = [
   {
     id: "46",
     name: "Cyber Unicorn #109",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/neon-vessel.png",
     priceEth: "1.76",
     collection: "digital-art",
     network: "ethereum",
@@ -380,7 +380,7 @@ export const nfts: NftItem[] = [
   {
     id: "48",
     name: "Void Kraken #173",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/sage-nomad.png",
     priceEth: "2.89",
     collection: "music",
     network: "solana",
@@ -396,7 +396,7 @@ export const nfts: NftItem[] = [
   {
     id: "50",
     name: "Crystal Panda #119",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/golden-beat.png",
     priceEth: "1.43",
     collection: "collectibles",
     network: "polygon",
@@ -412,7 +412,7 @@ export const nfts: NftItem[] = [
   {
     id: "52",
     name: "Glitch Wolf #145",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/neon-vessel.png",
     priceEth: "0.74",
     collection: "games",
     network: "ethereum",
@@ -428,7 +428,7 @@ export const nfts: NftItem[] = [
   {
     id: "54",
     name: "Chrome Lion #186",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/sage-nomad.png",
     priceEth: "1.32",
     collection: "utility",
     network: "solana",
@@ -444,7 +444,7 @@ export const nfts: NftItem[] = [
   {
     id: "56",
     name: "Emerald Dragon #114",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/golden-beat.png",
     priceEth: "3.08",
     collection: "photography",
     network: "polygon",
@@ -460,7 +460,7 @@ export const nfts: NftItem[] = [
   {
     id: "58",
     name: "Ruby Raven #153",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/neon-vessel.png",
     priceEth: "1.94",
     collection: "3d-art",
     network: "ethereum",
@@ -476,7 +476,7 @@ export const nfts: NftItem[] = [
   {
     id: "60",
     name: "Infinity Ape #201",
-    imageUrl: "/images/emerald-ape.png",
+    imageUrl: "/images/sage-nomad.png",
     priceEth: "4.20",
     collection: "generative",
     network: "solana",
