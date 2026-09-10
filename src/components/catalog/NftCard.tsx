@@ -15,9 +15,12 @@ export function NftCard({ nft }: NftCardProps) {
         />
       </div>
 
-      <div className="pt-3">
-        <h3 className="font-semibold">{nft.name}</h3>
-        <p className="font-semibold text-primary">{nft.priceEth} ETH</p>
+      <div className="pt-2">
+        <h3 className="text-sm font-semibold lg:text-base">{nft.name}</h3>
+
+        <p className="text-sm font-semibold text-primary lg:text-base">
+          {nft.priceEth} ETH
+        </p>
       </div>
     </article>
   );

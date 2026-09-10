@@ -6,6 +6,7 @@ import { useCatalogQuery } from "@/catalog/queries";
 import { useState } from "react";
 import { Sidebar } from "@/components/catalog/Sidebar";
 import { NftCard } from "@/components/catalog/NftCard";
+import { Search } from "@/components/catalog/Search";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => ({
@@ -66,35 +67,31 @@ function RouteComponent() {
     <div className="">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-8">
         <Header />
+        <div className="mx-auto w-full max-w-[1200px] px-4 lg:hidden">
+          <Search
+            value={searchInput}
+            onChange={setSearchInput}
+            onSubmit={handleSearch}
+            className="flex gap-2"
+          />
+        </div>
         <Hero />
       </div>
+
       <main className="mx-auto mt-12 w-full max-w-[1200px] px-4 lg:px-0">
         <div className="grid gap-10 lg:grid-cols-[260px_minmax(0,1fr)]">
           <Sidebar />
 
           <section>
-            <form
-              className="mb-6 flex gap-2"
-              onSubmit={(event) => {
-                event.preventDefault();
-                handleSearch();
-              }}
-            >
-              <input
-                className="flex-1 border px-3 py-2"
-                value={searchInput}
-                onChange={(event) => setSearchInput(event.target.value)}
-                type="search"
-                placeholder="Buscar NFTs"
-              />
-
-              <button type="submit" className="border px-4 py-2">
-                Buscar
-              </button>
-            </form>
+            <Search
+              value={searchInput}
+              onChange={setSearchInput}
+              onSubmit={handleSearch}
+              className="mb-6 hidden gap-2 lg:flex"
+            />
             {/* toolbar */}
-            <div className="mb-7 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-6">
+            <div className="mb-7 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex gap-4 overflow-x-auto">
                 <button type="button" className="font-semibold text-primary">
                   Todos os NFTs
                 </button>
@@ -104,7 +101,7 @@ function RouteComponent() {
                 <button type="button">Em alta</button>
               </div>
 
-              <label className="flex items-center gap-2">
+              <label className="hidden items-center gap-2 lg:flex">
                 <span>Ordenar por:</span>
 
                 <select

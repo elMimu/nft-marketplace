@@ -18,7 +18,7 @@ const networks = [
 
 export function Sidebar() {
   return (
-    <aside className="space-y-10 border p-5">
+    <aside className="hidden space-y-10 border p-5 lg:block">
       <section>
         <h2 className="mb-5 text-lg font-semibold">Coleções</h2>
 
