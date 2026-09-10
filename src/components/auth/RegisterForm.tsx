@@ -34,7 +34,13 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       return;
     }
 
-    register(username, email, password);
+    const success = register(username, email, password);
+
+    if (!success) {
+      setError("Já existe uma conta com este e-mail.");
+      return;
+    }
+
     setError("");
     onSuccess?.();
   }
