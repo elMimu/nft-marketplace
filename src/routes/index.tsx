@@ -9,6 +9,7 @@ import { Search } from "@/components/catalog/Search";
 import { Sidebar } from "@/components/catalog/Sidebar";
 import { Hero } from "@/components/home/Hero";
 import { Header } from "@/components/layout/Header";
+import { EditorialSection } from "@/components/home/EditorialSelection";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => ({
@@ -22,6 +23,22 @@ export const Route = createFileRoute("/")({
   }),
   component: RouteComponent,
 });
+
+function getVisiblePages(currentPage: number, totalPages: number) {
+  if (totalPages <= 3) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  if (currentPage <= 2) {
+    return [1, 2, 3];
+  }
+
+  if (currentPage >= totalPages - 1) {
+    return [totalPages - 2, totalPages - 1, totalPages];
+  }
+
+  return [currentPage - 1, currentPage, currentPage + 1];
+}
 
 function RouteComponent() {
   const searchParams = Route.useSearch();
@@ -67,6 +84,15 @@ function RouteComponent() {
     input.scrollIntoView({
       behavior: "smooth",
       block: "center",
+    });
+  }
+
+  function handlePage(page: number) {
+    navigate({
+      search: (previous) => ({
+        ...previous,
+        page,
+      }),
     });
   }
 
@@ -179,77 +205,170 @@ function RouteComponent() {
               className="mb-6 hidden lg:block"
             />
 
-            <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex gap-5 overflow-x-auto whitespace-nowrap">
+            <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div className="flex gap-6 overflow-x-auto whitespace-nowrap">
                 <button
                   type="button"
-                  className="shrink-0 font-semibold text-primary"
+                  className="
+                    shrink-0
+                    border-b-[3px] border-primary
+                    pb-2
+                    text-[14px] font-medium
+                    text-accent
+                  "
                 >
                   Todos os NFTs
                 </button>
 
-                <button type="button" className="shrink-0">
+                <button
+                  type="button"
+                  className="
+                    shrink-0
+                    border-b-[3px] border-transparent
+                    pb-2
+                    text-[14px] font-normal
+                    text-muted-foreground
+                    transition-colors
+                    hover:text-foreground
+                  "
+                >
                   Novos lançamentos
                 </button>
 
-                <button type="button" className="shrink-0">
+                <button
+                  type="button"
+                  className="
+                    shrink-0
+                    border-b-[3px] border-transparent
+                    pb-2
+                    text-[14px] font-normal
+                    text-muted-foreground
+                    transition-colors
+                    hover:text-foreground
+                  "
+                >
                   Em alta
                 </button>
               </div>
 
               <label className="hidden items-center gap-2 lg:flex">
-                <span>Ordenar por:</span>
+                <span className="text-[14px] text-muted-foreground">
+                  Ordenar por:
+                </span>
 
                 <select
                   value={searchParams.sort}
                   onChange={(event) => handleSort(event.target.value)}
-                  className="border bg-background"
+                  className="
+                    bg-background
+                    text-[14px] text-foreground
+                    outline-none
+                  "
                 >
                   <option value="featured">Listados recentemente</option>
+
                   <option value="price-asc">Menor preço</option>
+
                   <option value="price-desc">Maior preço</option>
                 </select>
               </label>
             </div>
 
             {data && (
-              <p className="mb-4 text-sm text-muted-foreground">
+              <p className="mb-4 text-[14px] text-muted-foreground">
                 Página {data.page} de {data.totalPages} · {data.totalItems} NFTs
               </p>
             )}
 
-            {isPending && <p>Loading NFTs...</p>}
+            {isPending && (
+              <p className="text-muted-foreground">Loading NFTs...</p>
+            )}
 
-            {isError && <p>Unable to load NFTs.</p>}
+            {isError && (
+              <p className="text-muted-foreground">Unable to load NFTs.</p>
+            )}
 
             {data && data.items.length > 0 && (
-              <div className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-14">
+              <div
+                className="
+                  grid grid-cols-2
+                  gap-x-4 gap-y-8
+                  lg:grid-cols-3
+                  lg:gap-x-8 lg:gap-y-14
+                "
+              >
                 {data.items.map((nft) => (
                   <NftCard key={nft.id} nft={nft} />
                 ))}
               </div>
             )}
 
-            {data?.items.length === 0 && <p>Nenhum produto encontrado.</p>}
+            {data?.items.length === 0 && (
+              <p className="text-muted-foreground">
+                Nenhum produto encontrado.
+              </p>
+            )}
 
             {data && data.totalPages > 1 && (
-              <div className="mt-10 flex justify-center gap-2 lg:justify-end">
+              <div
+                className="
+                  mt-10 flex items-center
+                  justify-center gap-2
+                  lg:justify-end
+                "
+              >
                 <button
                   type="button"
                   onClick={handlePreviousPage}
                   disabled={data.page <= 1}
-                  className="border px-3 py-2 disabled:opacity-40"
+                  className="
+                    flex h-8 w-8
+                    items-center justify-center
+                    text-foreground
+                    disabled:opacity-40
+                  "
+                  aria-label="Página anterior"
                 >
                   &lt;
                 </button>
 
-                <span className="border px-3 py-2">{data.page}</span>
+                {getVisiblePages(data.page, data.totalPages).map((page) => {
+                  const selected = page === data.page;
+
+                  return (
+                    <button
+                      key={page}
+                      type="button"
+                      onClick={() => handlePage(page)}
+                      className={`
+                        flex h-8 w-8
+                        items-center justify-center
+                        rounded-[6px]
+                        text-[14px] font-medium
+                        transition-colors
+                        ${selected
+                          ? "bg-primary text-[var(--link)]"
+                          : "bg-card text-foreground hover:bg-muted"
+                        }
+                      `}
+                      aria-current={selected ? "page" : undefined}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
 
                 <button
                   type="button"
                   onClick={handleNextPage}
                   disabled={data.page >= data.totalPages}
-                  className="border px-3 py-2 disabled:opacity-40"
+                  className="
+                    flex h-8 w-8
+                    items-center justify-center
+                    text-foreground
+                    disabled:opacity-40
+                  "
+                  aria-label="Próxima página"
                 >
                   &gt;
                 </button>
@@ -260,6 +379,7 @@ function RouteComponent() {
 
         <MobileBottomNav />
       </main>
+      <EditorialSection />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useState } from "react";
 
 import { LoginForm } from "@/components/auth/LoginForm";
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -14,6 +16,7 @@ import {
 interface LoginDialogProps {
   triggerLabel?: string;
   triggerClassName?: string;
+  triggerIcon?: ReactNode;
   onSuccess?: () => void;
 }
 
@@ -22,6 +25,7 @@ type AuthMode = "login" | "register";
 export function LoginDialog({
   triggerLabel = "Entrar",
   triggerClassName,
+  triggerIcon,
   onSuccess,
 }: LoginDialogProps) {
   const [open, setOpen] = useState(false);
@@ -33,74 +37,75 @@ export function LoginDialog({
     onSuccess?.();
   }
 
+  function handleOpenChange(value: boolean) {
+    setOpen(value);
+
+    if (!value) {
+      setMode("login");
+    }
+  }
+
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(value) => {
-        setOpen(value);
-
-        if (!value) {
-          setMode("login");
-        }
-      }}
-    >
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger
-        render={<Button type="button" className={triggerClassName} />}
-      >
-        {triggerLabel}
-      </DialogTrigger>
+        render={
+          <Button type="button" className={triggerClassName}>
+            {triggerIcon}
+            {triggerLabel}
+          </Button>
+        }
+      />
 
-      <DialogContent className="max-w-[500px] p-8">
+      <DialogContent className="sm:max-w-[440px]">
         <DialogHeader>
-          <DialogTitle className="sr-only">Autenticação</DialogTitle>
+          <DialogTitle>
+            {mode === "login" ? "Entrar" : "Criar conta"}
+          </DialogTitle>
+
+          <DialogDescription>
+            {mode === "login"
+              ? "Entre para continuar no Kurio."
+              : "Crie sua conta para continuar no Kurio."}
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="flex justify-center gap-2 text-2xl font-semibold">
-          <button
-            type="button"
-            onClick={() => setMode("login")}
-            className={
-              mode === "login" ? "text-foreground" : "text-muted-foreground"
-            }
-          >
-            Entrar
-          </button>
+        <div className="mt-2">
+          <div className="mb-6 grid grid-cols-2 border-b border-primary">
+            <button
+              type="button"
+              onClick={() => setMode("login")}
+              className={`
+                border-b-2 px-4 py-3 text-sm
+                ${mode === "login"
+                  ? "border-primary text-accent"
+                  : "border-transparent text-muted-foreground"
+                }
+              `}
+            >
+              Entrar
+            </button>
 
-          <span>|</span>
+            <button
+              type="button"
+              onClick={() => setMode("register")}
+              className={`
+                border-b-2 px-4 py-3 text-sm
+                ${mode === "register"
+                  ? "border-primary text-accent"
+                  : "border-transparent text-muted-foreground"
+                }
+              `}
+            >
+              Criar conta
+            </button>
+          </div>
 
-          <button
-            type="button"
-            onClick={() => setMode("register")}
-            className={
-              mode === "register" ? "text-primary" : "text-muted-foreground"
-            }
-          >
-            Criar conta
-          </button>
+          {mode === "login" ? (
+            <LoginForm onSuccess={handleSuccess} />
+          ) : (
+            <RegisterForm onSuccess={handleSuccess} />
+          )}
         </div>
-
-        {mode === "login" ? (
-          <>
-            <p className="mt-6 text-center text-sm text-muted-foreground">
-              Entre para acessar sua conta e continuar suas compras.
-            </p>
-
-            <div className="mt-6">
-              <LoginForm onSuccess={handleSuccess} />
-            </div>
-          </>
-        ) : (
-          <>
-            <p className="mt-6 text-center text-sm text-muted-foreground">
-              Crie seu perfil de colecionador e conecte uma carteira quando
-              quiser.
-            </p>
-
-            <div className="mt-6">
-              <RegisterForm onSuccess={handleSuccess} />
-            </div>
-          </>
-        )}
       </DialogContent>
     </Dialog>
   );

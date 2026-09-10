@@ -13,21 +13,69 @@ interface FiltersProps {
 }
 
 const collections = [
-  { label: "Arte digital", value: "digital-art" },
-  { label: "Fotografia", value: "photography" },
-  { label: "Música", value: "music" },
-  { label: "Arte 3D", value: "3d-art" },
-  { label: "Colecionáveis", value: "collectibles" },
-  { label: "Generativa", value: "generative" },
-  { label: "Jogos", value: "games" },
-  { label: "Assinaturas", value: "subscriptions" },
-  { label: "Utilidade", value: "utility" },
+  {
+    label: "Arte digital",
+    value: "digital-art",
+    count: 33,
+  },
+  {
+    label: "Fotografia",
+    value: "photography",
+    count: 12,
+  },
+  {
+    label: "Música",
+    value: "music",
+    count: 65,
+  },
+  {
+    label: "Arte 3D",
+    value: "3d-art",
+    count: 39,
+  },
+  {
+    label: "Colecionáveis",
+    value: "collectibles",
+    count: 23,
+  },
+  {
+    label: "Generativa",
+    value: "generative",
+    count: 17,
+  },
+  {
+    label: "Jogos",
+    value: "games",
+    count: 19,
+  },
+  {
+    label: "Assinaturas",
+    value: "subscriptions",
+    count: 13,
+  },
+  {
+    label: "Utilidade",
+    value: "utility",
+    count: 18,
+  },
 ];
 
 const networks = [
-  { label: "Ethereum", value: "ethereum" },
-  { label: "Polygon", value: "polygon" },
-  { label: "Solana", value: "solana" },
+  {
+    label: "Ethereum",
+    value: "ethereum",
+    count: 119,
+  },
+  {
+    label: "Polygon",
+    value: "polygon",
+    count: 78,
+  },
+  {
+    label: "Solana",
+    value: "solana",
+    count: 86,
+  },
 ];
 
 export function Filters({
@@ -40,14 +88,22 @@ export function Filters({
   onPriceApply,
 }: FiltersProps) {
   const [minPrice, setMinPrice] = useState(priceMin);
+
   const [maxPrice, setMaxPrice] = useState(priceMax);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <section>
-        <h2 className="mb-4 text-base font-semibold">Coleções</h2>
+        <h2
+          className="
+            mb-4 text-[16px] font-bold
+            leading-[24px] text-foreground
+          "
+        >
+          Coleções
+        </h2>
 
-        <div className="space-y-2">
+        <div className="space-y-1">
           {collections.map((item) => {
             const selected = collection === item.value;
 
@@ -57,16 +113,19 @@ export function Filters({
                 type="button"
                 onClick={() => onCollectionChange(selected ? "" : item.value)}
                 className={`
-                  flex w-full items-center rounded-lg
-                  px-3 py-2.5 text-left text-sm
+                  flex w-full items-center
+                  justify-between py-2
+                  text-left text-[14px]
+                  font-normal leading-[24px]
                   transition-colors
                   ${selected
-                    ? "bg-primary/10 font-semibold text-primary"
-                    : "hover:bg-muted"
+                    ? "text-accent"
+                    : "text-muted-foreground hover:text-foreground"
                   }
                 `}
               >
-                {item.label}
+                <span>{item.label}</span>
+                <span>({item.count})</span>
               </button>
             );
           })}
@@ -74,59 +133,141 @@ export function Filters({
       </section>
 
       <section>
-        <h2 className="mb-4 text-base font-semibold">Faixa de preço</h2>
+        <h2
+          className="
+            mb-4 text-[16px] font-bold
+            leading-[24px] text-foreground
+          "
+        >
+          Faixa de preço
+        </h2>
 
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <label className="space-y-1.5">
-              <span className="text-xs text-muted-foreground">Min</span>
+        <div className="grid grid-cols-2 gap-3">
+          <label>
+            <span
+              className="
+                mb-1.5 block text-[12px]
+                text-muted-foreground
+              "
+            >
+              Min
+            </span>
 
-              <div className="flex h-11 items-center rounded-lg border px-3 focus-within:ring-2 focus-within:ring-ring">
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  value={minPrice}
-                  onChange={(event) => setMinPrice(event.target.value)}
-                  placeholder="0.00"
-                  className="min-w-0 flex-1 bg-transparent text-sm outline-none"
-                />
+            <div
+              className="
+                flex h-[40px] items-center
+                rounded-[6px]
+                border border-primary
+                bg-muted px-3
+                focus-within:ring-1
+                focus-within:ring-primary
+              "
+            >
+              <input
+                type="text"
+                inputMode="decimal"
+                value={minPrice}
+                onChange={(event) => setMinPrice(event.target.value)}
+                placeholder="0.02"
+                className="
+                  min-w-0 flex-1
+                  bg-transparent
+                  text-[14px]
+                  text-foreground
+                  outline-none
+                  placeholder:text-muted-foreground
+                "
+              />
 
-                <span className="ml-2 text-xs text-muted-foreground">ETH</span>
-              </div>
-            </label>
+              <span
+                className="
+                  ml-2 text-[12px]
+                  text-muted-foreground
+                "
+              >
+                ETH
+              </span>
+            </div>
+          </label>
 
-            <label className="space-y-1.5">
-              <span className="text-xs text-muted-foreground">Max</span>
+          <label>
+            <span
+              className="
+                mb-1.5 block text-[12px]
+                text-muted-foreground
+              "
+            >
+              Max
+            </span>
 
-              <div className="flex h-11 items-center rounded-lg border px-3 focus-within:ring-2 focus-within:ring-ring">
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  value={maxPrice}
-                  onChange={(event) => setMaxPrice(event.target.value)}
-                  placeholder="12.30"
-                  className="min-w-0 flex-1 bg-transparent text-sm outline-none"
-                />
+            <div
+              className="
+                flex h-[40px] items-center
+                rounded-[6px]
+                border border-primary
+                bg-muted px-3
+                focus-within:ring-1
+                focus-within:ring-primary
+              "
+            >
+              <input
+                type="text"
+                inputMode="decimal"
+                value={maxPrice}
+                onChange={(event) => setMaxPrice(event.target.value)}
+                placeholder="12.30"
+                className="
+                  min-w-0 flex-1
+                  bg-transparent
+                  text-[14px]
+                  text-foreground
+                  outline-none
+                  placeholder:text-muted-foreground
+                "
+              />
 
-                <span className="ml-2 text-xs text-muted-foreground">ETH</span>
-              </div>
-            </label>
-          </div>
-
-          <Button
-            type="button"
-            className="w-full transition-transform active:scale-[0.98]"
-            onClick={() => onPriceApply(minPrice, maxPrice)}
-          >
-            Aplicar
-          </Button>
+              <span
+                className="
+                  ml-2 text-[12px]
+                  text-muted-foreground
+                "
+              >
+                ETH
+              </span>
+            </div>
+          </label>
         </div>
+
+        <Button
+          type="button"
+          onClick={() => onPriceApply(minPrice, maxPrice)}
+          className="
+            mt-4 h-[40px]
+            w-[140px]
+            rounded-[6px]
+            bg-primary
+            px-5
+            text-[16px]
+            font-bold
+            text-[var(--link)]
+            hover:bg-accent
+          "
+        >
+          Aplicar
+        </Button>
       </section>
 
       <section>
-        <h2 className="mb-4 text-base font-semibold">Rede</h2>
+        <h2
+          className="
+            mb-4 text-[16px] font-bold
+            leading-[24px] text-foreground
+          "
+        >
+          Rede
+        </h2>
 
-        <div className="space-y-2">
+        <div className="space-y-1">
           {networks.map((item) => {
             const selected = network === item.value;
 
@@ -136,16 +277,19 @@ export function Filters({
                 type="button"
                 onClick={() => onNetworkChange(selected ? "" : item.value)}
                 className={`
-                  flex w-full items-center rounded-lg
-                  px-3 py-2.5 text-left text-sm
+                  flex w-full items-center
+                  justify-between py-2
+                  text-left text-[14px]
+                  font-normal leading-[24px]
                   transition-colors
                   ${selected
-                    ? "bg-primary/10 font-semibold text-primary"
-                    : "hover:bg-muted"
+                    ? "text-accent"
+                    : "text-muted-foreground hover:text-foreground"
                   }
                 `}
               >
-                {item.label}
+                <span>{item.label}</span>
+                <span>({item.count})</span>
               </button>
             );
           })}

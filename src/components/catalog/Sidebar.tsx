@@ -1,3 +1,4 @@
+import { FeaturedNft } from "./FeaturedNft";
 import { Filters } from "./Filters";
 
 interface SidebarProps {
@@ -20,16 +21,22 @@ export function Sidebar({
   onPriceApply,
 }: SidebarProps) {
   return (
-    <aside className="hidden border p-5 lg:block">
-      <Filters
-        collection={collection}
-        network={network}
-        priceMin={priceMin}
-        priceMax={priceMax}
-        onCollectionChange={onCollectionChange}
-        onNetworkChange={onNetworkChange}
-        onPriceApply={onPriceApply}
-      />
+    <aside className="hidden overflow-hidden bg-card lg:block">
+      <div className="px-8 py-8">
+        <Filters
+          collection={collection}
+          network={network}
+          priceMin={priceMin}
+          priceMax={priceMax}
+          onCollectionChange={onCollectionChange}
+          onNetworkChange={onNetworkChange}
+          onPriceApply={onPriceApply}
+        />
+      </div>
+
+      <div className="h-8 bg-background" />
+
+      <FeaturedNft />
     </aside>
   );
 }
