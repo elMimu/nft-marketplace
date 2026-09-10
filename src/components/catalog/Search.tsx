@@ -12,11 +12,11 @@ export function Search({ value, onChange, className, inputRef }: SearchProps) {
     <div className={className}>
       <input
         ref={inputRef}
-        className="w-full border px-3 py-2"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         type="search"
         placeholder="Buscar NFTs"
+        className="h-12 w-full rounded-xl border px-4"
       />
     </div>
   );

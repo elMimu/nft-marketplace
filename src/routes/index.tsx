@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Header } from "@/components/layout/Header";
-import { Hero } from "@/components/home/Hero";
+import { useEffect, useRef, useState } from "react";
 
 import { useCatalogQuery } from "@/catalog/queries";
-import { useEffect, useRef, useState } from "react";
-import { Sidebar } from "@/components/catalog/Sidebar";
+import { MobileBottomNav } from "@/components/catalog/MobileBottomNav";
+import { MobileFilters } from "@/components/catalog/MobileFilters";
 import { NftCard } from "@/components/catalog/NftCard";
 import { Search } from "@/components/catalog/Search";
-import { MobileFilters } from "@/components/catalog/MobileFilters";
+import { Sidebar } from "@/components/catalog/Sidebar";
+import { Hero } from "@/components/home/Hero";
+import { Header } from "@/components/layout/Header";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => ({
@@ -28,7 +29,6 @@ function RouteComponent() {
   const { data, isPending, isError } = useCatalogQuery(searchParams);
 
   const desktopSearchRef = useRef<HTMLInputElement>(null);
-
   const navigate = Route.useNavigate();
 
   useEffect(() => {
@@ -79,6 +79,15 @@ function RouteComponent() {
     });
   }
 
+  function handlePreviousPage() {
+    navigate({
+      search: (previous) => ({
+        ...previous,
+        page: Math.max(1, previous.page - 1),
+      }),
+    });
+  }
+
   function handlePriceApply(priceMin: string, priceMax: string) {
     navigate({
       search: (previous) => ({
@@ -86,15 +95,6 @@ function RouteComponent() {
         priceMin,
         priceMax,
         page: 1,
-      }),
-    });
-  }
-
-  function handlePreviousPage() {
-    navigate({
-      search: (previous) => ({
-        ...previous,
-        page: previous.page - 1,
       }),
     });
   }
@@ -130,26 +130,36 @@ function RouteComponent() {
   }
 
   return (
-    <div className="">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-8">
-        <Header onSearchClick={handleSearchFocus} />
-        <div className="mx-auto w-full max-w-[1200px] px-4 lg:hidden">
+    <div className="pb-24 lg:pb-0">
+      <div className="mx-auto w-full max-w-[1200px]">
+        <div className="flex gap-3 px-6 pt-4 lg:hidden">
           <Search
             value={searchInput}
             onChange={setSearchInput}
-            className="flex-1"
+            className="min-w-0 flex-1"
+          />
+
+          <MobileFilters
+            collection={searchParams.collection}
+            network={searchParams.network}
+            priceMin={searchParams.priceMin}
+            priceMax={searchParams.priceMax}
+            onCollectionChange={handleCollection}
+            onNetworkChange={handleNetwork}
+            onPriceApply={handlePriceApply}
           />
         </div>
-        <MobileFilters
-          collection={searchParams.collection}
-          network={searchParams.network}
-          onCollectionChange={handleCollection}
-          onNetworkChange={handleNetwork}
-        />
-        <Hero />
+
+        <div className="flex flex-col gap-8 lg:gap-8">
+          <Header onSearchClick={handleSearchFocus} />
+
+          <div className="px-6 lg:px-0">
+            <Hero />
+          </div>
+        </div>
       </div>
 
-      <main className="mx-auto mt-12 w-full max-w-[1200px] px-4 lg:px-0">
+      <main className="mx-auto mt-8 w-full max-w-[1200px] px-6 lg:mt-12 lg:px-0">
         <div className="grid gap-10 lg:grid-cols-[260px_minmax(0,1fr)]">
           <Sidebar
             collection={searchParams.collection}
@@ -168,16 +178,23 @@ function RouteComponent() {
               inputRef={desktopSearchRef}
               className="mb-6 hidden lg:block"
             />
-            {/* toolbar */}
-            <div className="mb-7 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex gap-4 overflow-x-auto">
-                <button type="button" className="font-semibold text-primary">
+
+            <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex gap-5 overflow-x-auto whitespace-nowrap">
+                <button
+                  type="button"
+                  className="shrink-0 font-semibold text-primary"
+                >
                   Todos os NFTs
                 </button>
 
-                <button type="button">Novos lançamentos</button>
+                <button type="button" className="shrink-0">
+                  Novos lançamentos
+                </button>
 
-                <button type="button">Em alta</button>
+                <button type="button" className="shrink-0">
+                  Em alta
+                </button>
               </div>
 
               <label className="hidden items-center gap-2 lg:flex">
@@ -194,29 +211,29 @@ function RouteComponent() {
                 </select>
               </label>
             </div>
-            {/* grid */}
 
-            {isPending && <p>Loading NFTs...</p>}
-            {isError && <p>Unable to load NFTs.</p>}
             {data && (
-              <p className="text-sm text-muted-foreground">
+              <p className="mb-4 text-sm text-muted-foreground">
                 Página {data.page} de {data.totalPages} · {data.totalItems} NFTs
               </p>
             )}
+
+            {isPending && <p>Loading NFTs...</p>}
+
+            {isError && <p>Unable to load NFTs.</p>}
+
             {data && data.items.length > 0 && (
-              <div className="grid grid-cols-2 gap-x-8 gap-y-14 lg:grid-cols-3">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-14">
                 {data.items.map((nft) => (
                   <NftCard key={nft.id} nft={nft} />
                 ))}
               </div>
             )}
 
-            {data?.items.length == 0 && <p>Nehum produto encontrado.</p>}
-
-            {/* pagination */}
+            {data?.items.length === 0 && <p>Nenhum produto encontrado.</p>}
 
             {data && data.totalPages > 1 && (
-              <div className="mt-12 flex justify-end gap-2">
+              <div className="mt-10 flex justify-center gap-2 lg:justify-end">
                 <button
                   type="button"
                   onClick={handlePreviousPage}
@@ -240,6 +257,8 @@ function RouteComponent() {
             )}
           </section>
         </div>
+
+        <MobileBottomNav />
       </main>
     </div>
   );

@@ -7,7 +7,7 @@ interface HeaderProps {
 
 export function Header({ onSearchClick }: HeaderProps) {
   return (
-    <header>
+    <header className="hidden lg:block">
       <div className="border-b flex p-4 lg:p-0 items-center justify-between">
         {/* TODO - logo change to figma pattern */}
         <Link
