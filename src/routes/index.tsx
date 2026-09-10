@@ -4,6 +4,8 @@ import { Hero } from "@/components/home/Hero";
 
 import { useCatalogQuery } from "@/catalog/queries";
 import { useState } from "react";
+import { Sidebar } from "@/components/catalog/Sidebar";
+import { NftCard } from "@/components/catalog/NftCard";
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => ({
@@ -22,6 +24,7 @@ function RouteComponent() {
   const searchParams = Route.useSearch();
   const [searchInput, setSearchInput] = useState(searchParams.search);
   const { data, isPending, isError } = useCatalogQuery(searchParams);
+  console.log(data?.totalPages);
 
   const navigate = Route.useNavigate();
 
@@ -65,39 +68,96 @@ function RouteComponent() {
         <Header />
         <Hero />
       </div>
-      <main>
-        {" "}
-        <input
-          className="border"
-          value={searchInput}
-          onChange={(event) => setSearchInput(event.target.value)}
-          type="text"
-        />
-        <button onClick={handleSearch}>Search</button>
-        <select
-          value={searchParams.sort}
-          onChange={(event) => handleSort(event.target.value)}
-        >
-          <option value="featured">Featured</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
-        </select>
-        {/* {} */}
-        {isPending && <p>Loading NFTs...</p>}
-        {isError && <p>Unable to load NFTs.</p>}
-        {data && (
-          <>
-            {data.items.map((nft) => (
-              <p key={nft.id}>{nft.name}</p>
-            ))}
+      <main className="mx-auto mt-12 w-full max-w-[1200px] px-4 lg:px-0">
+        <div className="grid gap-10 lg:grid-cols-[260px_minmax(0,1fr)]">
+          <Sidebar />
 
-            <button onClick={handlePreviousPage}>Previous</button>
-            <span>
-              Page {data.page} of {data.totalPages}
-            </span>
-            <button onClick={handleNextPage}>next</button>
-          </>
-        )}
+          <section>
+            <form
+              className="mb-6 flex gap-2"
+              onSubmit={(event) => {
+                event.preventDefault();
+                handleSearch();
+              }}
+            >
+              <input
+                className="flex-1 border px-3 py-2"
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                type="search"
+                placeholder="Buscar NFTs"
+              />
+
+              <button type="submit" className="border px-4 py-2">
+                Buscar
+              </button>
+            </form>
+            {/* toolbar */}
+            <div className="mb-7 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-6">
+                <button type="button" className="font-semibold text-primary">
+                  Todos os NFTs
+                </button>
+
+                <button type="button">Novos lançamentos</button>
+
+                <button type="button">Em alta</button>
+              </div>
+
+              <label className="flex items-center gap-2">
+                <span>Ordenar por:</span>
+
+                <select
+                  value={searchParams.sort}
+                  onChange={(event) => handleSort(event.target.value)}
+                  className="border bg-background"
+                >
+                  <option value="featured">Listados recentemente</option>
+                  <option value="price-asc">Menor preço</option>
+                  <option value="price-desc">Maior preço</option>
+                </select>
+              </label>
+            </div>
+            {/* grid */}
+            {isPending && <p>Loading NFTs...</p>}
+            {isError && <p>Unable to load NFTs.</p>}
+            {data && data.items.length > 0 && (
+              <div className="grid grid-cols-2 gap-x-8 gap-y-14 lg:grid-cols-3">
+                {data.items.map((nft) => (
+                  <NftCard key={nft.id} nft={nft} />
+                ))}
+              </div>
+            )}
+
+            {data?.items.length == 0 && <p>Nehum produto encontrado.</p>}
+
+            {/* pagination */}
+
+            {data && data.totalPages > 1 && (
+              <div className="mt-12 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={handlePreviousPage}
+                  disabled={data.page <= 1}
+                  className="border px-3 py-2 disabled:opacity-40"
+                >
+                  &lt;
+                </button>
+
+                <span className="border px-3 py-2">{data.page}</span>
+
+                <button
+                  type="button"
+                  onClick={handleNextPage}
+                  disabled={data.page >= data.totalPages}
+                  className="border px-3 py-2 disabled:opacity-40"
+                >
+                  &gt;
+                </button>
+              </div>
+            )}
+          </section>
+        </div>
       </main>
     </div>
   );

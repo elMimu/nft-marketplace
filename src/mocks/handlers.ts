@@ -25,6 +25,7 @@ export const handlers = [
       filteredNtfs.filter((nft) => nft.collection == collection);
     }
 
+
     if (network) {
       filteredNtfs.filter((nft) => nft.network == network);
     }
@@ -40,6 +41,7 @@ export const handlers = [
     if (filteredNtfs.length <= 0) {
       return HttpResponse.json({});
     }
+
 
     const sortedNtfs = (() => {
       switch (sortMethod) {
@@ -58,15 +60,17 @@ export const handlers = [
       }
     })();
 
-    const itemsPerPage = 4;
+    const itemsPerPage = 9;
 
     // 0 - 3, 4 - 7...
     const start = itemsPerPage * (page - 1);
     const end = start + itemsPerPage;
 
     const items = sortedNtfs.slice(start, end);
-    const totalItems = items.length;
+    const totalItems = filteredNtfs.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    console.log(totalItems);
 
     return HttpResponse.json({
       items,
