@@ -44,6 +44,17 @@ function RouteComponent() {
     });
   }
 
+  function handlePriceApply(priceMin: string, priceMax: string) {
+    navigate({
+      search: (previous) => ({
+        ...previous,
+        priceMin,
+        priceMax,
+        page: 1,
+      }),
+    });
+  }
+
   function handlePreviousPage() {
     navigate({
       search: (previous) => ({
@@ -109,8 +120,11 @@ function RouteComponent() {
           <Sidebar
             collection={searchParams.collection}
             network={searchParams.network}
+            priceMin={searchParams.priceMin}
+            priceMax={searchParams.priceMax}
             onCollectionChange={handleCollection}
             onNetworkChange={handleNetwork}
+            onPriceApply={handlePriceApply}
           />
 
           <section>

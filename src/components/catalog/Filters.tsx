@@ -1,8 +1,13 @@
+import { useState } from "react";
+
 interface FiltersProps {
   collection: string;
   network: string;
+  priceMin: string;
+  priceMax: string;
   onCollectionChange: (collection: string) => void;
   onNetworkChange: (network: string) => void;
+  onPriceApply: (priceMin: string, priceMax: string) => void;
 }
 
 const collections = [
@@ -26,9 +31,15 @@ const networks = [
 export function Filters({
   collection,
   network,
+  priceMin,
+  priceMax,
   onCollectionChange,
   onNetworkChange,
+  onPriceApply,
 }: FiltersProps) {
+  const [minPrice, setMinPrice] = useState(priceMin);
+  const [maxPrice, setMaxPrice] = useState(priceMax);
+
   return (
     <div className="space-y-10">
       <section>
@@ -56,11 +67,27 @@ export function Filters({
         <h2 className="mb-5 text-lg font-semibold">Faixa de preço</h2>
 
         <div className="space-y-4">
-          <input className="w-full" type="range" min="0" max="12" step="0.1" />
+          <input
+            type="text"
+            value={minPrice}
+            onChange={(event) => setMinPrice(event.target.value)}
+            placeholder="Preço mínimo"
+            className="w-full border px-3 py-2"
+          />
 
-          <p>Preço: 0,02 - 12,30 ETH</p>
+          <input
+            type="text"
+            value={maxPrice}
+            onChange={(event) => setMaxPrice(event.target.value)}
+            placeholder="Preço máximo"
+            className="w-full border px-3 py-2"
+          />
 
-          <button type="button" className="border px-4 py-2">
+          <button
+            type="button"
+            className="border px-4 py-2"
+            onClick={() => onPriceApply(minPrice, maxPrice)}
+          >
             Aplicar
           </button>
         </div>
